@@ -1,0 +1,447 @@
+﻿@model ProfileViewModel
+@{
+    ViewData["Title"] = "Profilim";
+    ViewData["ActiveMenu"] = "profile";
+    Layout = "~/Views/MessageLayout/Index.cshtml";
+    var flash = TempData["Flash"] as string;
+    var photoError = TempData["Error"] as string;
+    var tr = new System.Globalization.CultureInfo("tr-TR");
+    var initial = string.IsNullOrWhiteSpace(Model.Name) ? "?" : Model.Name.Trim()[0].ToString().ToUpper(tr);
+    var fullName = $"{Model.Name} {Model.Surname}".Trim();
+    var hasPhoto = !string.IsNullOrEmpty(Model.ImageUrl);
+}
+
+<style>
+    /* ---- Profil kartı (sağ) ---- */
+    .pf-card {
+        padding: 0;
+        overflow: hidden;
+    }
+
+    .pf-banner {
+        height: 96px;
+        background: linear-gradient(135deg,#8B7FD6 0%,#b3a9ec 55%,#4FB3BF 120%);
+        position: relative;
+    }
+
+    .pf-body {
+        padding: 0 1.5rem 1.5rem;
+        text-align: center;
+    }
+
+    .pf-avatar-wrap {
+        position: relative;
+        width: 132px;
+        height: 132px;
+        margin: -66px auto 0;
+    }
+
+    .pf-avatar {
+        width: 132px;
+        height: 132px;
+        border-radius: 50%;
+        object-fit: cover;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 5px solid var(--bs-body-bg,#fff);
+        box-shadow: 0 10px 28px rgba(139,127,214,.35);
+        background: #fff;
+    }
+
+        .pf-avatar.initial {
+            background: linear-gradient(135deg,#8B7FD6,#b3a9ec);
+            color: #fff;
+            font-size: 3rem;
+            font-weight: 700;
+        }
+
+    .pf-cam {
+        position: absolute;
+        right: 2px;
+        bottom: 4px;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        border: 3px solid var(--bs-body-bg,#fff);
+        background: #8B7FD6;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: transform .15s, background .15s;
+    }
+
+        .pf-cam:hover {
+            transform: scale(1.1);
+            background: #7a6dc9;
+        }
+
+    .pf-name {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-top: .85rem;
+        margin-bottom: 0;
+    }
+
+    .pf-user {
+        color: #8B7FD6;
+        font-size: .9rem;
+        font-weight: 500;
+    }
+
+    .pf-mail {
+        color: var(--bs-secondary-color,#6c757d);
+        font-size: .85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: .35rem;
+        margin-top: .2rem;
+    }
+
+    .pf-about {
+        margin-top: 1rem;
+        padding: .8rem 1rem;
+        border-radius: 14px;
+        background: rgba(139,127,214,.08);
+        font-size: .85rem;
+        text-align: left;
+        color: var(--bs-secondary-color,#555);
+        word-break: break-word;
+    }
+
+        .pf-about .lbl {
+            font-size: .7rem;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: #8B7FD6;
+            display: block;
+            margin-bottom: .2rem;
+        }
+
+    .pf-divider {
+        height: 1px;
+        background: rgba(0,0,0,.07);
+        margin: 1.25rem 0;
+    }
+
+    /* Yükleme alanı */
+    .pf-drop {
+        display: block;
+        border: 2px dashed rgba(139,127,214,.45);
+        border-radius: 16px;
+        padding: 1rem;
+        cursor: pointer;
+        transition: all .15s;
+        text-align: center;
+    }
+
+        .pf-drop:hover, .pf-drop.is-drag {
+            border-color: #8B7FD6;
+            background: rgba(139,127,214,.07);
+        }
+
+        .pf-drop i {
+            font-size: 1.5rem;
+            color: #8B7FD6;
+            display: block;
+        }
+
+        .pf-drop .t {
+            font-weight: 600;
+            font-size: .88rem;
+        }
+
+        .pf-drop .s {
+            font-size: .75rem;
+            color: var(--bs-secondary-color,#6c757d);
+        }
+
+    .pf-file-name {
+        font-size: .8rem;
+        margin-top: .5rem;
+        display: none;
+        word-break: break-all;
+    }
+
+    .pf-actions {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+        margin-top: .75rem;
+    }
+
+        .pf-actions .btn-soft {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .pf-actions form {
+            margin: 0;
+        }
+
+    .btn-soft.is-danger {
+        color: #c2456d;
+    }
+
+        .btn-soft.is-danger:hover {
+            background: rgba(229,122,154,.12);
+        }
+
+    #uploadBtn {
+        display: none;
+        background: #8B7FD6;
+        color: #fff;
+        border-color: #8B7FD6;
+    }
+
+        #uploadBtn:hover {
+            background: #7a6dc9;
+            color: #fff;
+        }
+
+    /* ---- Form (sol) ---- */
+    .pf-head {
+        display: flex;
+        align-items: center;
+        gap: .9rem;
+        margin-bottom: 1.5rem;
+    }
+
+        .pf-head .ico {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            background: rgba(139,127,214,.14);
+            color: #8B7FD6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex: 0 0 auto;
+        }
+
+    .pf-field label {
+        font-size: .85rem;
+    }
+
+    .pf-input {
+        position: relative;
+    }
+
+        .pf-input > i {
+            position: absolute;
+            left: .9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9a94c9;
+            pointer-events: none;
+        }
+
+        .pf-input .form-control {
+            padding-left: 2.5rem;
+        }
+
+    .pf-counter {
+        font-size: .75rem;
+        color: var(--bs-secondary-color,#6c757d);
+        text-align: right;
+        margin-top: .25rem;
+    }
+
+        .pf-counter.warn {
+            color: #c2456d;
+        }
+
+    .pf-form-foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 1.5rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid rgba(0,0,0,.07);
+    }
+</style>
+
+<section class="msg-page">
+    <div class="mp-grid">
+
+        <!-- Sol: form -->
+        <article class="mp-card">
+            <div class="pf-head">
+                <span class="ico"><i class="bi bi-person-gear"></i></span>
+                <div>
+                    <h1 class="pv-subject mb-0">Profilim</h1>
+                    <div class="text-muted small">Ad, soyad ve açıklamanızı buradan güncelleyebilirsiniz.</div>
+                </div>
+            </div>
+
+            @if (flash != null)
+            {
+                <div class="alert alert-success py-2"><i class="bi bi-check-circle me-1"></i> @flash</div>
+            }
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2"></div>
+
+            <form method="post" asp-controller="Profile" asp-action="Index" novalidate>
+                <div class="row g-3">
+                    <div class="col-md-6 pf-field">
+                        <label class="form-label fw-semibold" asp-for="Name">Ad</label>
+                        <div class="pf-input">
+                            <i class="bi bi-person"></i>
+                            <input class="form-control" asp-for="Name" maxlength="50" autocomplete="given-name">
+                        </div>
+                        <span class="text-danger small" asp-validation-for="Name"></span>
+                    </div>
+                    <div class="col-md-6 pf-field">
+                        <label class="form-label fw-semibold" asp-for="Surname">Soyad</label>
+                        <div class="pf-input">
+                            <i class="bi bi-person-badge"></i>
+                            <input class="form-control" asp-for="Surname" maxlength="50" autocomplete="family-name">
+                        </div>
+                        <span class="text-danger small" asp-validation-for="Surname"></span>
+                    </div>
+                    <div class="col-12 pf-field">
+                        <label class="form-label fw-semibold" asp-for="Description">Hakkımda</label>
+                        <textarea id="descBox" class="form-control" asp-for="Description" rows="5" maxlength="300" placeholder="Kendinizden kısaca bahsedin..."></textarea>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-danger small" asp-validation-for="Description"></span>
+                            <div id="descCounter" class="pf-counter ms-auto">0 / 300</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pf-form-foot">
+                    <span class="text-muted small"><i class="bi bi-info-circle"></i> Değişiklikler kaydedildiğinde tüm hesabınızda güncellenir.</span>
+                    <button type="submit" class="btn-soft"><i class="bi bi-check2-circle"></i> Kaydet</button>
+                </div>
+            </form>
+        </article>
+
+        <!-- Sağ: profil kartı -->
+        <div class="mp-side-card pf-card">
+            <div class="pf-banner"></div>
+
+            <div class="pf-body">
+                <div class="pf-avatar-wrap">
+                    @if (hasPhoto)
+                    {
+                        <img id="avatarImg" src="@Model.ImageUrl" alt="Profil fotoğrafı" class="pf-avatar">
+                    }
+                    else
+                    {
+                        <span id="avatarInitial" class="pf-avatar initial">@initial</span>
+                        <img id="avatarImg" alt="Profil fotoğrafı" class="pf-avatar" style="display:none">
+                    }
+                    <label for="photoInput" class="pf-cam" title="Fotoğraf seç"><i class="bi bi-camera-fill"></i></label>
+                </div>
+
+                <h2 class="pf-name">@(string.IsNullOrEmpty(fullName) ? Model.UserName : fullName)</h2>
+                <div class="pf-user">@@@Model.UserName</div>
+                <div class="pf-mail"><i class="bi bi-envelope"></i> @Model.Email</div>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Description))
+                {
+                    <div class="pf-about"><span class="lbl">Hakkımda</span>@Model.Description</div>
+                }
+
+                @if (photoError != null)
+                {
+                    <div class="alert alert-danger py-2 mt-3 mb-0 small text-start"><i class="bi bi-exclamation-triangle me-1"></i> @photoError</div>
+                }
+
+                <div class="pf-divider"></div>
+
+                <form method="post" asp-controller="Profile" asp-action="UploadPhoto" enctype="multipart/form-data">
+                    <input type="file" id="photoInput" name="photo" class="d-none" accept="image/png,image/jpeg,image/webp" required>
+                    <label for="photoInput" id="dropZone" class="pf-drop">
+                        <i class="bi bi-cloud-arrow-up"></i>
+                        <div class="t">Fotoğraf seç veya sürükle</div>
+                        <div class="s">PNG, JPG veya WEBP</div>
+                    </label>
+                    <div id="fileName" class="pf-file-name text-muted"></div>
+
+                    <div class="pf-actions">
+                        <button type="submit" id="uploadBtn" class="btn-soft"><i class="bi bi-camera"></i> Fotoğrafı yükle</button>
+                    </div>
+                </form>
+
+                <div class="pf-actions">
+                    @if (hasPhoto)
+                    {
+                        <form method="post" asp-controller="Profile" asp-action="RemovePhoto" onsubmit="return confirm('Profil fotoğrafı kaldırılsın mı?');">
+                            <button type="submit" class="btn-soft is-danger"><i class="bi bi-trash3"></i> Fotoğrafı kaldır</button>
+                        </form>
+                    }
+                    <a class="btn-soft" asp-controller="Profile" asp-action="ChangePassword">
+                        <i class="bi bi-key"></i> Şifre değiştir
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    (function () {
+        // Açıklama karakter sayacı
+        var desc = document.getElementById('descBox');
+        var counter = document.getElementById('descCounter');
+        function updateCounter() {
+            if (!desc || !counter) return;
+            var len = desc.value.length;
+            counter.textContent = len + ' / 300';
+            counter.classList.toggle('warn', len >= 270);
+        }
+        if (desc) { desc.addEventListener('input', updateCounter); updateCounter(); }
+
+        // Fotoğraf seçimi: canlı önizleme
+        var input = document.getElementById('photoInput');
+        var img = document.getElementById('avatarImg');
+        var ini = document.getElementById('avatarInitial');
+        var btn = document.getElementById('uploadBtn');
+        var nameEl = document.getElementById('fileName');
+        var drop = document.getElementById('dropZone');
+        var allowed = ['image/png', 'image/jpeg', 'image/webp'];
+
+        function handleFile(file) {
+            if (!file) return;
+            if (allowed.indexOf(file.type) === -1) {
+                alert('Lütfen PNG, JPG veya WEBP formatında bir görsel seçin.');
+                input.value = '';
+                return;
+            }
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                img.src = e.target.result;
+                img.style.display = 'flex';
+                if (ini) ini.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+            nameEl.textContent = file.name;
+            nameEl.style.display = 'block';
+            btn.style.display = 'inline-flex';
+        }
+
+        if (input) input.addEventListener('change', function () { handleFile(input.files[0]); });
+
+        // Sürükle-bırak
+        if (drop) {
+            ['dragenter', 'dragover'].forEach(function (ev) {
+                drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('is-drag'); });
+            });
+            ['dragleave', 'drop'].forEach(function (ev) {
+                drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('is-drag'); });
+            });
+            drop.addEventListener('drop', function (e) {
+                if (e.dataTransfer && e.dataTransfer.files.length) {
+                    input.files = e.dataTransfer.files;
+                    handleFile(input.files[0]);
+                }
+            });
+        }
+    })();
+</script>

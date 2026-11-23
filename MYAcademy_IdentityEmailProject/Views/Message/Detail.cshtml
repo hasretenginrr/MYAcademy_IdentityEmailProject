@@ -1,0 +1,105 @@
+﻿@model MessageDetailViewModel
+@using System.Globalization
+@{
+    ViewData["Title"] = Model.Subject;
+    ViewData["ActiveMenu"] = Model.IsReceived ? "inbox" : "sent";   // sidebar'da ilgili menüyü aktif yapar
+    Layout = "~/Views/MessageLayout/Index.cshtml";
+
+    // Karşı taraf: gelen mesajda gönderen, gönderilen mesajda alıcı
+    var otherParty = Model.IsReceived ? Model.SenderEmail : Model.ReciverEmail;
+    var backAction = Model.IsReceived ? "Inbox" : "Sendbox";
+    var backText = Model.IsReceived ? "Gelen Kutusu" : "Gönderilenler";
+}
+@functions {
+    static readonly CultureInfo Tr = new("tr-TR");
+    static readonly string[] AvatarColors = { "av-lav", "av-blue", "av-mint", "av-rose", "av-peach", "av-sun" };
+
+    static string Initials(string? name)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return "?";
+        return name.Trim()[0].ToString().ToUpper(Tr);
+    }
+
+    // Aynı kişi her zaman aynı renkte görünür (Inbox ile aynı mantık)
+    static string AvatarColor(string? key)
+    {
+        var h = 0;
+        foreach (var c in key ?? "") h = (h * 31 + c) & 0x7fffffff;
+        return AvatarColors[h % AvatarColors.Length];
+    }
+
+    static string LabelClass(string? label) => label switch
+    {
+        "İş" => "tag-is",
+        "Kişisel" => "tag-kisisel",
+        "Fatura" => "tag-fatura",
+        _ => "tag-sistem"
+    };
+}
+
+<section class="msg-page">
+
+    <div class="mp-top">
+        <a class="btn-soft mp-back" asp-controller="Message" asp-action="@backAction">
+            <i class="bi bi-arrow-left"></i> @backText
+        </a>
+        <a class="btn-soft" asp-controller="Message" asp-action="Reply" asp-route-id="@Model.MessageId">
+            <i class="bi bi-reply"></i> Yanıtla
+        </a>
+        <a class="btn-soft" asp-controller="Message" asp-action="Forward" asp-route-id="@Model.MessageId">
+            <i class="bi bi-forward"></i> İlet
+        </a>
+    </div>
+
+    <div class="mp-grid">
+
+        <!-- Sol: mesajın kendisi -->
+        <article class="mp-card">
+            <div class="pv-subject-row">
+                <h1 class="pv-subject">@Model.Subject</h1>
+                @if (!string.IsNullOrEmpty(Model.CategoryName))
+                {
+                    <span class="tag @LabelClass(Model.CategoryName)">@Model.CategoryName</span>
+                }
+            </div>
+
+            <div class="pv-sender">
+                <span class="avatar lg @AvatarColor(Model.SenderEmail)">@Initials(Model.SenderEmail)</span>
+                <div class="who">
+                    <div class="nm">@Model.SenderEmail</div>
+                    <div class="to">Kime: <b>@Model.ReciverEmail</b></div>
+                </div>
+                <div class="dt">
+                    <b>@Model.SendDate.ToString("d MMMM yyyy", Tr)</b>
+                    @Model.SendDate.ToString("dddd, HH:mm", Tr)
+                </div>
+            </div>
+
+            <!-- İçerik sunucuda temizlendi (HtmlSanitizer); yalnızca güvenli etiketler kaldı -->
+            <div class="pv-body">@Html.Raw(Model.BodyHtml)</div>
+        </article>
+
+        <!-- Sağ: karşı taraf ve mesaj bilgileri -->
+        <aside class="mp-side">
+            <div class="mp-side-card">
+                <h6>@(Model.IsReceived ? "Gönderen" : "Alıcı")</h6>
+                <div class="mp-contact">
+                    <span class="avatar lg @AvatarColor(otherParty)">@Initials(otherParty)</span>
+                    <div>
+                        <div class="em">@otherParty</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mp-side-card">
+                <h6>Mesaj bilgileri</h6>
+                <ul class="mp-facts" style="margin-top:0;padding-top:0;border-top:0">
+                    <li><span class="k"><i class="bi bi-tag"></i> Kategori</span><span class="v">@(Model.CategoryName ?? "—")</span></li>
+                    <li><span class="k"><i class="bi bi-clock"></i> Tarih</span><span class="v">@Model.SendDate.ToString("dd.MM.yyyy HH:mm", Tr)</span></li>
+                    <li><span class="k"><i class="bi bi-eye"></i> Durum</span><span class="v">@(Model.IsRead ? "Okundu" : "Okunmadı")</span></li>
+                </ul>
+            </div>
+        </aside>
+
+    </div>
+</section>

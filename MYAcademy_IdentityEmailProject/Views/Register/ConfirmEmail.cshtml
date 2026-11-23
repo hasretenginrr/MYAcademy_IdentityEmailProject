@@ -1,0 +1,717 @@
+﻿@model ConfirmEmailViewModel
+@{
+    Layout = null;
+
+    // Controller'daki ModelState.AddModelError("", "...") ile eklenen genel hata
+    var error = ViewData.ModelState[string.Empty]?.Errors.FirstOrDefault()?.ErrorMessage;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>E-posta Doğrulama · Mailora</title>
+
+    <!-- Bootstrap 5 + Bootstrap Icons + Font (CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* =========================================================
+                       1. TASARIM DEĞİŞKENLERİ (Mailora teması ile aynı)
+                       NOT: Razor dosyasında CSS ve JS içindeki at işareti iki kez yazılmalıdır.
+                       ========================================================= */
+        :root {
+            --bg: #F8F9FD;
+            --card: #FFFFFF;
+            --accent: #8B7FD6;
+            --accent-dark: #7467C7;
+            --lavender: #EAE6FA;
+            --blue: #E8F2FF;
+            --mint: #E3F5EE;
+            --peach: #FDEEE6;
+            --rose: #FBE7EE;
+            --text: #303348;
+            --muted: #85899B;
+            --border: #ECEBF5;
+            --success: #3E9A77;
+            --success-soft: #5CC09A;
+            --danger: #C2476B;
+            --shadow-lg: 0 24px 60px rgba(91, 80, 170, .16);
+            --ease: cubic-bezier(.4, 0, .2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            min-height: 100%;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 14px;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        a {
+            color: var(--accent-dark);
+            text-decoration: none;
+        }
+
+            a:hover {
+                color: var(--accent);
+            }
+
+        button {
+            font-family: inherit;
+        }
+
+        /* Dekoratif arka plan (Register / Login ile aynı) */
+        .auth-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+            .auth-bg span {
+                position: absolute;
+                border-radius: 50%;
+                filter: blur(60px);
+                opacity: .75;
+            }
+
+            .auth-bg .g1 {
+                width: 520px;
+                height: 520px;
+                background: var(--lavender);
+                top: -180px;
+                left: -140px;
+            }
+
+            .auth-bg .g2 {
+                width: 460px;
+                height: 460px;
+                background: var(--blue);
+                bottom: -200px;
+                right: -120px;
+            }
+
+            .auth-bg .g3 {
+                width: 300px;
+                height: 300px;
+                background: var(--mint);
+                top: 40%;
+                left: 55%;
+                opacity: .5;
+            }
+
+        /* =========================================================
+                       2. SAYFA & KART
+                       ========================================================= */
+        .page {
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 20px;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text);
+            margin-bottom: 24px;
+        }
+
+            .brand:hover {
+                color: var(--text);
+            }
+
+        .brand-logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            background: linear-gradient(135deg, #A99DF0 0%, var(--accent) 55%, #6F63C4 100%);
+            display: grid;
+            place-items: center;
+            color: #fff;
+            font-size: 19px;
+            box-shadow: 0 6px 16px rgba(139, 127, 214, .35);
+        }
+
+        .brand-name {
+            font-weight: 800;
+            font-size: 22px;
+            letter-spacing: -.4px;
+        }
+
+            .brand-name span {
+                color: var(--accent);
+            }
+
+        .card-x {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            background: var(--card);
+            border-radius: 28px;
+            box-shadow: var(--shadow-lg);
+            padding: 40px 40px 30px;
+            text-align: center;
+            overflow: hidden;
+            animation: cardIn .5s var(--ease);
+        }
+
+            .card-x::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                height: 150px;
+                pointer-events: none;
+                background: radial-gradient(circle, rgba(255, 255, 255, .85) 1.4px, transparent 2px) 0 0 / 22px 22px, linear-gradient(180deg, #EFEBFC 0%, rgba(239, 235, 252, 0) 100%);
+            }
+
+            .card-x > * {
+                position: relative;
+            }
+
+        @@keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        /* Simge: zarf + mint rozet */
+        .mail-ic {
+            position: relative;
+            width: 88px;
+            height: 88px;
+            margin: 0 auto 22px;
+        }
+
+            .mail-ic .circle {
+                width: 100%;
+                height: 100%;
+                border-radius: 28px;
+                background: linear-gradient(135deg, #B4AAF0, var(--accent) 60%, #6F63C4);
+                display: grid;
+                place-items: center;
+                color: #fff;
+                font-size: 38px;
+                box-shadow: 0 14px 30px rgba(111, 99, 196, .35);
+                animation: bob 3.2s ease-in-out infinite;
+            }
+
+            .mail-ic .badge-ic {
+                position: absolute;
+                right: -8px;
+                bottom: -6px;
+                width: 34px;
+                height: 34px;
+                border-radius: 50%;
+                border: 4px solid #fff;
+                background: var(--success-soft);
+                color: #fff;
+                display: grid;
+                place-items: center;
+                font-size: 15px;
+                box-shadow: 0 6px 14px rgba(92, 192, 154, .35);
+            }
+
+            .mail-ic .dot {
+                position: absolute;
+                border-radius: 50%;
+                animation: bob 3s ease-in-out infinite;
+            }
+
+            .mail-ic .d1 {
+                width: 12px;
+                height: 12px;
+                background: var(--mint);
+                left: -22px;
+                top: 14px;
+            }
+
+            .mail-ic .d2 {
+                width: 8px;
+                height: 8px;
+                background: #F5CFDC;
+                right: -20px;
+                top: 6px;
+                animation-delay: .8s;
+            }
+
+            .mail-ic .d3 {
+                width: 10px;
+                height: 10px;
+                background: var(--blue);
+                left: -12px;
+                bottom: 2px;
+                animation-delay: 1.4s;
+            }
+
+        @@keyframes bob {
+            50% {
+                transform: translateY(-6px);
+            }
+        }
+
+        h1 {
+            font-size: 25px;
+            font-weight: 800;
+            letter-spacing: -.6px;
+            margin: 0 0 10px;
+        }
+
+        .sub {
+            color: var(--muted);
+            font-size: 14.5px;
+            line-height: 1.6;
+            margin: 0 auto 6px;
+            max-width: 360px;
+        }
+
+            .sub b {
+                color: var(--text);
+                font-weight: 700;
+            }
+
+        .change {
+            font-size: 13px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* =========================================================
+                       3. 6 HANELİ KOD ALANI
+                       ========================================================= */
+        .otp {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr) 18px repeat(3, 1fr);
+            gap: 10px;
+            align-items: center;
+            max-width: 400px;
+            margin: 28px auto 0;
+        }
+
+            .otp .sep {
+                height: 3px;
+                border-radius: 3px;
+                background: #DCD8F0;
+            }
+
+            .otp input {
+                width: 100%;
+                aspect-ratio: .86;
+                min-width: 0;
+                border: 1.5px solid var(--border);
+                border-radius: 14px;
+                background: var(--bg);
+                text-align: center;
+                font-size: 26px;
+                font-weight: 800;
+                color: var(--text);
+                font-family: inherit;
+                caret-color: var(--accent);
+                outline: none;
+                transition: border-color .2s, background .2s, box-shadow .2s, transform .15s var(--ease);
+            }
+
+                .otp input:hover {
+                    border-color: #DEDBEE;
+                }
+
+                .otp input:focus {
+                    background: #fff;
+                    border-color: #BFB6EE;
+                    box-shadow: 0 0 0 4px rgba(139, 127, 214, .14);
+                    transform: translateY(-2px);
+                }
+
+                .otp input.filled {
+                    background: #fff;
+                    border-color: #CFC8F2;
+                }
+
+                .otp input:disabled {
+                    opacity: .55;
+                    cursor: not-allowed;
+                }
+
+            .otp.is-invalid input {
+                border-color: #EFAFC3;
+                background: #FFF8FA;
+            }
+
+                .otp.is-invalid input:focus {
+                    box-shadow: 0 0 0 4px rgba(224, 117, 151, .14);
+                }
+
+        .shake {
+            animation: shake .4s var(--ease);
+        }
+
+        @@keyframes shake {
+            20%, 60% {
+                transform: translateX(-6px);
+            }
+
+            40%, 80% {
+                transform: translateX(6px);
+            }
+        }
+
+        .msg {
+            min-height: 20px;
+            margin: 12px 0 0;
+            font-size: 12.5px;
+            font-weight: 500;
+        }
+
+            .msg.err {
+                color: var(--danger);
+            }
+
+                .msg.err::before {
+                    content: "\F33A";
+                    font-family: "bootstrap-icons";
+                    margin-right: 6px;
+                }
+
+        /* Buton */
+        .btn-primary-x {
+            width: 100%;
+            max-width: 400px;
+            height: 52px;
+            margin: 22px auto 0;
+            border: 0;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(135deg, #9C91E2 0%, var(--accent) 50%, var(--accent-dark) 100%);
+            background-size: 160% 100%;
+            box-shadow: 0 10px 24px rgba(139, 127, 214, .38);
+            transition: transform .2s var(--ease), box-shadow .2s var(--ease), background-position .4s var(--ease), opacity .2s;
+        }
+
+            .btn-primary-x:hover:not(:disabled) {
+                color: #fff;
+                transform: translateY(-2px);
+                background-position: 100% 0;
+                box-shadow: 0 14px 30px rgba(139, 127, 214, .45);
+            }
+
+            .btn-primary-x:disabled {
+                opacity: .55;
+                cursor: not-allowed;
+                box-shadow: none;
+            }
+
+            .btn-primary-x.loading {
+                opacity: .9;
+                cursor: wait;
+            }
+
+        .spinner-sm {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, .35);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+        }
+
+        @@keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .tip {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            text-align: left;
+            margin: 22px auto 0;
+            max-width: 400px;
+            padding: 12px 14px;
+            border-radius: 13px;
+            background: var(--blue);
+            color: #4A7CC2;
+            font-size: 12.5px;
+            line-height: 1.5;
+        }
+
+            .tip i {
+                font-size: 15px;
+                margin-top: 1px;
+            }
+
+        .card-foot {
+            margin-top: 22px;
+            padding-top: 18px;
+            border-top: 1px dashed var(--border);
+            font-size: 13px;
+        }
+
+            .card-foot a {
+                font-weight: 700;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+        .page-foot {
+            margin-top: 20px;
+            font-size: 12px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        /* =========================================================
+                       4. RESPONSIVE
+                       ========================================================= */
+        @@media (max-width: 575.98px) {
+            .page {
+                padding: 20px 14px;
+                justify-content: flex-start;
+            }
+
+            .brand {
+                margin: 8px 0 18px;
+            }
+
+            .card-x {
+                padding: 32px 20px 24px;
+                border-radius: 24px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .sub {
+                font-size: 14px;
+            }
+
+            .otp {
+                gap: 7px;
+                grid-template-columns: repeat(3, 1fr) 10px repeat(3, 1fr);
+            }
+
+                .otp input {
+                    font-size: 22px;
+                    border-radius: 12px;
+                }
+        }
+
+        @@media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-bg" aria-hidden="true"><span class="g1"></span><span class="g2"></span><span class="g3"></span></div>
+
+    <!-- E-POSTA DOĞRULAMA (6 haneli kod)
+         Form → RegisterController.ConfirmEmail (POST), Model → ConfirmEmailViewModel (Email, Code) -->
+    <main class="page">
+        <a class="brand" href="#" aria-label="Mailora ana sayfa">
+            <span class="brand-logo"><i class="bi bi-envelope-paper-heart-fill"></i></span>
+            <span class="brand-name">Mail<span>ora</span></span>
+        </a>
+
+        <section class="card-x" id="card">
+            <div id="verifyView">
+                <div class="mail-ic" aria-hidden="true">
+                    <span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span>
+                    <div class="circle"><i class="bi bi-envelope-open-heart"></i></div>
+                    <span class="badge-ic"><i class="bi bi-shield-check"></i></span>
+                </div>
+
+                <h1>E-posta Adresinizi Doğrulayın</h1>
+                <p class="sub"><b id="maskedEmail"></b> adresine 6 haneli bir doğrulama kodu gönderdik. Kodu aşağıya girin.</p>
+                <a asp-controller="Register" asp-action="SignUp" class="change"><i class="bi bi-pencil"></i> E-posta adresini değiştir</a>
+
+                <form id="verifyForm" method="post" asp-controller="Register" asp-action="ConfirmEmail" novalidate autocomplete="off">
+                    <input type="hidden" asp-for="Email" id="emailField">
+                    <input type="hidden" asp-for="Code" id="codeField">
+
+                    <div class="otp @(error != null ? "is-invalid" : "")" id="otp" role="group" aria-label="6 haneli doğrulama kodu">
+                        <input type="text" inputmode="numeric" autocomplete="one-time-code" aria-label="1. hane">
+                        <input type="text" inputmode="numeric" aria-label="2. hane">
+                        <input type="text" inputmode="numeric" aria-label="3. hane">
+                        <span class="sep" aria-hidden="true"></span>
+                        <input type="text" inputmode="numeric" aria-label="4. hane">
+                        <input type="text" inputmode="numeric" aria-label="5. hane">
+                        <input type="text" inputmode="numeric" aria-label="6. hane">
+                    </div>
+                    <p class="msg @(error != null ? "err" : "")" id="msg" aria-live="polite">@error</p>
+
+                    <button type="submit" class="btn-primary-x" id="verifyBtn" disabled>
+                        <i class="bi bi-shield-check"></i><span>Hesabımı Doğrula</span>
+                    </button>
+                </form>
+
+                <div class="tip">
+                    <i class="bi bi-info-circle-fill"></i>
+                    <span>E-postayı göremiyorsanız <b>Spam</b> veya <b>Gereksiz</b> klasörünü kontrol edin. Kodu kimseyle paylaşmayın; Mailora ekibi sizden asla kod istemez.</span>
+                </div>
+
+                <div class="card-foot">
+                    <a asp-controller="Register" asp-action="SignUp"><i class="bi bi-arrow-left"></i> Kayıt sayfasına dön</a>
+                </div>
+            </div>
+        </section>
+
+        <div class="page-foot">© 2026 Mailora · <i class="bi bi-lock-fill"></i> Bağlantınız SSL ile korunur</div>
+    </main>
+
+    <script>
+        /* ======================================================================
+           MAILORA — E-POSTA DOĞRULAMA
+           Kod burada doğrulanmaz; form sunucuya gönderilir ve
+           RegisterController.ConfirmEmail içinde kontrol edilir.
+           ====================================================================== */
+        const $ = (s, r = document) => r.querySelector(s);
+        const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+        const CODE_LENGTH = 6;
+
+        const otp = $('#otp');
+        const boxes = $$('input', otp);
+        const msg = $('#msg');
+        const btn = $('#verifyBtn');
+
+        /* ---------- E-posta (maskelenmiş) ---------- */
+        const email = $('#emailField').value;
+        function maskEmail(e) {
+          if (!e || !e.includes('@@')) return '';
+          const [user, domain] = e.split('@@');
+          const visible = user.length <= 2 ? user[0] : user[0] + '***' + user[user.length - 1];
+          return `${visible}@@${domain}`;
+        }
+        $('#maskedEmail').textContent = maskEmail(email);
+
+        /* ---------- Kod kutuları ---------- */
+        const getCode = () => boxes.map(b => b.value).join('');
+
+        function setError(text) {
+          otp.classList.toggle('is-invalid', !!text);
+          msg.className = 'msg' + (text ? ' err' : '');
+          msg.textContent = text || '';
+          if (text) { otp.classList.remove('shake'); void otp.offsetWidth; otp.classList.add('shake'); }
+        }
+
+        function refresh() {
+          boxes.forEach(b => b.classList.toggle('filled', !!b.value));
+          const code = getCode();
+          $('#codeField').value = code;
+          btn.disabled = code.length !== CODE_LENGTH;
+        }
+
+        // Birden fazla rakamı (yapıştırma / otomatik doldurma) verilen kutudan itibaren dağıt
+        function fillFrom(index, digits) {
+          digits.slice(0, CODE_LENGTH - index).split('').forEach((d, i) => { boxes[index + i].value = d; });
+          const next = Math.min(index + digits.length, CODE_LENGTH - 1);
+          boxes[next].focus();
+          refresh();
+          if (getCode().length === CODE_LENGTH) submit();   // tamamlanınca otomatik gönder
+        }
+
+        boxes.forEach((box, i) => {
+          box.addEventListener('focus', () => box.select());
+
+          box.addEventListener('input', () => {
+            const digits = box.value.replace(/\D/g, '');
+            box.value = '';
+            if (otp.classList.contains('is-invalid')) setError('');
+            if (!digits) { refresh(); return; }
+            fillFrom(i, digits);
+          });
+
+          box.addEventListener('keydown', e => {
+            if (e.key === 'Backspace') {
+              if (!box.value && i > 0) { e.preventDefault(); boxes[i - 1].value = ''; boxes[i - 1].focus(); refresh(); }
+              setTimeout(refresh);
+            }
+            if (e.key === 'ArrowLeft' && i > 0) { e.preventDefault(); boxes[i - 1].focus(); }
+            if (e.key === 'ArrowRight' && i < CODE_LENGTH - 1) { e.preventDefault(); boxes[i + 1].focus(); }
+            if (e.key === 'Enter') { e.preventDefault(); submit(); }
+            if (e.key.length === 1 && !/\d/.test(e.key) && !e.ctrlKey && !e.metaKey) e.preventDefault();  // yalnızca rakam
+          });
+
+          box.addEventListener('paste', e => {
+            e.preventDefault();
+            const digits = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
+            if (!digits) { setError('Panodaki metinde rakam bulunamadı.'); return; }
+            setError('');
+            fillFrom(digits.length >= CODE_LENGTH ? 0 : i, digits);
+          });
+        });
+
+        /* ---------- Gönderim ---------- */
+        let submitting = false;
+        function submit() {
+          if (submitting) return;
+          const code = getCode();
+          if (code.length !== CODE_LENGTH) {
+            setError(`Lütfen ${CODE_LENGTH} haneli kodun tamamını girin.`);
+            const firstEmpty = boxes.find(b => !b.value);
+            if (firstEmpty) firstEmpty.focus();
+            return;
+          }
+
+          submitting = true;
+          setError('');
+          btn.disabled = true;
+          btn.classList.add('loading');
+          btn.innerHTML = '<span class="spinner-sm"></span><span>Doğrulanıyor…</span>';
+
+          // form.submit() "submit" olayını tetiklemez; bu yüzden aşağıdaki dinleyiciyle döngüye girmez.
+          $('#verifyForm').submit();
+        }
+        $('#verifyForm').addEventListener('submit', e => { e.preventDefault(); submit(); });
+
+        /* ---------- Başlangıç ---------- */
+        refresh();
+        if (window.innerWidth >= 576) boxes[0].focus();
+    </script>
+</body>
+</html>

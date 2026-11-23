@@ -1,0 +1,680 @@
+﻿@model DashboardViewModel
+@using System.Globalization
+@{
+    ViewData["Title"] = "Dashboard";
+    ViewData["ActiveMenu"] = "dashboard";
+    Layout = "~/Views/MessageLayout/Index.cshtml";
+
+    var tr = new CultureInfo("tr-TR");
+    var totalForPct = Model.Categories.Sum(c => c.Count);
+    var now = DateTime.Now;
+
+    string greeting;
+    if (now.Hour < 6) greeting = "İyi geceler";
+    else if (now.Hour < 12) greeting = "Günaydın";
+    else if (now.Hour < 18) greeting = "İyi günler";
+    else greeting = "İyi akşamlar";
+
+    var palette = new[] { "#8B7FD6", "#4FB3BF", "#F2A65A", "#E57A9A", "#6BBF8A", "#7C9EDB", "#C9B458" };
+
+    // Donut (conic-gradient) hesabı
+    var stops = new List<string>();
+    double acc = 0;
+    for (int i = 0; i < Model.Categories.Count; i++)
+    {
+        var share = totalForPct == 0 ? 0 : Model.Categories[i].Count * 100.0 / totalForPct;
+        var from = acc;
+        acc += share;
+        stops.Add($"{palette[i % palette.Length]} {from.ToString("0.##", CultureInfo.InvariantCulture)}% {acc.ToString("0.##", CultureInfo.InvariantCulture)}%");
+    }
+    var donutCss = totalForPct == 0 ? "#e9e7f5" : string.Join(", ", stops);
+
+    var readPct = Model.InboxCount == 0 ? 100 : (int)Math.Round((Model.InboxCount - Model.UnreadCount) * 100.0 / Model.InboxCount);
+    var maxActivity = Math.Max(1, Model.Activity.Any() ? Model.Activity.Max(a => Math.Max(a.Received, a.Sent)) : 1);
+
+    // Trend: önceki haftaya göre değişim
+    (string text, string cls, string icon) Trend(int cur, int prev)
+    {
+        if (prev == 0 && cur == 0) return ("Değişim yok", "flat", "bi-dash");
+        if (prev == 0) return ("Yeni aktivite", "up", "bi-arrow-up-right");
+        var diff = (int)Math.Round((cur - prev) * 100.0 / prev);
+        if (diff > 0) return ($"%{diff} artış", "up", "bi-arrow-up-right");
+        if (diff < 0) return ($"%{Math.Abs(diff)} azalış", "down", "bi-arrow-down-right");
+        return ("Değişim yok", "flat", "bi-dash");
+    }
+    var recvTrend = Trend(Model.WeekReceived, Model.PrevWeekReceived);
+    var sentTrend = Trend(Model.WeekSent, Model.PrevWeekSent);
+
+    string Initial(string s) => string.IsNullOrWhiteSpace(s) ? "?" : s.Trim()[0].ToString().ToUpper(tr);
+    string AvatarColor(string s) => palette[Math.Abs((s ?? "").GetHashCode() % palette.Length)];
+}
+
+<style>
+    .dash-hero {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: .75rem;
+        margin-bottom: 1.25rem;
+    }
+
+        .dash-hero .sub {
+            color: var(--bs-secondary-color,#6c757d);
+            font-size: .9rem;
+        }
+
+    .dash-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        padding: .45rem .9rem;
+        border-radius: 999px;
+        background: #8B7FD6;
+        color: #fff;
+        text-decoration: none;
+        font-size: .875rem;
+        font-weight: 500;
+        transition: transform .15s, box-shadow .15s;
+    }
+
+        .dash-pill:hover {
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(139,127,214,.35);
+        }
+
+    .stat-card {
+        position: relative;
+        overflow: hidden;
+        transition: transform .18s ease, box-shadow .18s ease;
+        height: 100%;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 24px rgba(0,0,0,.08);
+        }
+
+    .stat-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+
+    .stat-value {
+        font-size: 1.9rem;
+        font-weight: 700;
+        line-height: 1.1;
+        margin-top: .6rem;
+    }
+
+    .stat-foot {
+        font-size: .75rem;
+        color: var(--bs-secondary-color,#6c757d);
+        margin-top: .15rem;
+    }
+
+    .stat-card.is-alert {
+        box-shadow: inset 0 0 0 1.5px rgba(229,122,154,.55);
+    }
+
+    .trend {
+        display: inline-flex;
+        align-items: center;
+        gap: .25rem;
+        font-size: .75rem;
+        font-weight: 600;
+        padding: .1rem .5rem;
+        border-radius: 999px;
+    }
+
+        .trend.up {
+            background: rgba(107,191,138,.18);
+            color: #2f8f57;
+        }
+
+        .trend.down {
+            background: rgba(229,122,154,.18);
+            color: #c2456d;
+        }
+
+        .trend.flat {
+            background: rgba(150,150,150,.15);
+            color: #777;
+        }
+
+    .dash-section-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+
+        .dash-section-title h6 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+    .dash-link {
+        font-size: .8rem;
+        text-decoration: none;
+        color: #8B7FD6;
+    }
+
+        .dash-link:hover {
+            text-decoration: underline;
+        }
+
+    /* Bar chart */
+    .bars {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: .5rem;
+        height: 170px;
+        padding-top: .5rem;
+    }
+
+    .bar-col {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100%;
+        justify-content: flex-end;
+    }
+
+    .bar-pair {
+        display: flex;
+        align-items: flex-end;
+        gap: 4px;
+        height: calc(100% - 22px);
+        width: 100%;
+        justify-content: center;
+    }
+
+    .bar {
+        width: 38%;
+        max-width: 22px;
+        min-height: 4px;
+        border-radius: 6px 6px 2px 2px;
+        transition: height .6s cubic-bezier(.2,.8,.2,1);
+        position: relative;
+    }
+
+        .bar.recv {
+            background: linear-gradient(180deg,#8B7FD6,#b3a9ec);
+        }
+
+        .bar.sent {
+            background: linear-gradient(180deg,#4FB3BF,#8dd3db);
+        }
+
+    .bar-label {
+        font-size: .7rem;
+        color: var(--bs-secondary-color,#6c757d);
+        margin-top: .35rem;
+        height: 15px;
+    }
+
+    .bar-col.is-today .bar-label {
+        color: #8B7FD6;
+        font-weight: 700;
+    }
+
+    .legend-dot {
+        display: inline-block;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        margin-right: .35rem;
+    }
+
+    /* Donut */
+    .donut-wrap {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        flex-wrap: wrap;
+    }
+
+    .donut {
+        --size: 140px;
+        width: var(--size);
+        height: var(--size);
+        border-radius: 50%;
+        position: relative;
+        flex: 0 0 auto;
+    }
+
+        .donut::after {
+            content: "";
+            position: absolute;
+            inset: 24px;
+            border-radius: 50%;
+            background: var(--bs-body-bg,#fff);
+        }
+
+    .donut-center {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+    }
+
+        .donut-center b {
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        .donut-center span {
+            font-size: .7rem;
+            color: var(--bs-secondary-color,#6c757d);
+        }
+
+    .cat-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: .85rem;
+        padding: .3rem 0;
+    }
+
+        .cat-row .name {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            min-width: 0;
+        }
+
+            .cat-row .name span.t {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                max-width: 130px;
+            }
+
+    /* Recent list */
+    .msg-row {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        padding: .7rem .5rem;
+        border-radius: 12px;
+        text-decoration: none;
+        color: inherit;
+        transition: background .15s;
+    }
+
+        .msg-row:hover {
+            background: rgba(139,127,214,.08);
+            color: inherit;
+        }
+
+        .msg-row + .msg-row {
+            border-top: 1px solid rgba(0,0,0,.05);
+        }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-weight: 600;
+        position: relative;
+    }
+
+    .unread-dot {
+        position: absolute;
+        top: -1px;
+        right: -1px;
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: #E57A9A;
+        border: 2px solid var(--bs-body-bg,#fff);
+    }
+
+    .msg-main {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .msg-top {
+        display: flex;
+        justify-content: space-between;
+        gap: .5rem;
+    }
+
+    .msg-sender {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .msg-subject {
+        color: var(--bs-secondary-color,#6c757d);
+        font-size: .85rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Progress ring-like read rate */
+    .read-bar {
+        height: 8px;
+        border-radius: 999px;
+        background: rgba(139,127,214,.18);
+        overflow: hidden;
+    }
+
+        .read-bar > div {
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg,#8B7FD6,#4FB3BF);
+        }
+
+    /* Top senders */
+    .sender-row {
+        display: flex;
+        align-items: center;
+        gap: .7rem;
+        padding: .45rem 0;
+    }
+
+        .sender-row .avatar {
+            width: 34px;
+            height: 34px;
+            font-size: .85rem;
+        }
+
+    .sender-meta {
+        flex: 1;
+        min-width: 0;
+    }
+
+        .sender-meta .e {
+            font-size: .85rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .sender-meta .d {
+            font-size: .72rem;
+            color: var(--bs-secondary-color,#6c757d);
+        }
+
+    .sender-count {
+        font-weight: 700;
+        font-size: .85rem;
+        background: rgba(139,127,214,.14);
+        color: #6a5fc0;
+        padding: .1rem .6rem;
+        border-radius: 999px;
+    }
+
+    .quick-grid {
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+        gap: .6rem;
+    }
+
+    .quick-btn {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        padding: .7rem .8rem;
+        border-radius: 12px;
+        border: 1px solid rgba(0,0,0,.07);
+        text-decoration: none;
+        color: inherit;
+        font-size: .85rem;
+        transition: all .15s;
+    }
+
+        .quick-btn:hover {
+            border-color: #8B7FD6;
+            background: rgba(139,127,214,.08);
+            color: inherit;
+            transform: translateY(-1px);
+        }
+
+        .quick-btn i {
+            color: #8B7FD6;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 2rem 1rem;
+        color: var(--bs-secondary-color,#6c757d);
+    }
+
+        .empty-state i {
+            font-size: 2rem;
+            opacity: .5;
+            display: block;
+            margin-bottom: .4rem;
+        }
+</style>
+
+<section class="msg-page">
+
+    <!-- Üst karşılama -->
+    <div class="dash-hero">
+        <div>
+            <h1 class="pv-subject mb-1">@greeting, @Model.FullName 👋</h1>
+            <div class="sub">
+                @now.ToString("d MMMM yyyy, dddd", tr) ·
+                @if (Model.UnreadCount > 0)
+                {
+                    <span>Okunmamış <b>@Model.UnreadCount</b> mesajınız var</span>
+                }
+                else
+                {
+                    <span>Tüm mesajlarınızı okudunuz 🎉</span>
+                }
+            </div>
+        </div>
+        <a class="dash-pill" asp-controller="Message" asp-action="Compose">
+            <i class="bi bi-pencil-square"></i> Yeni mesaj
+        </a>
+    </div>
+
+    <!-- Özet kartları -->
+    <div class="row g-3 mb-3">
+        @foreach (var (label, value, icon, action, color, foot, alert) in new[]
+                {
+                ("Gelen", Model.InboxCount, "bi-inbox", "Inbox", "#8B7FD6", $"Bugün +{Model.TodayReceived}", false),
+                ("Okunmamış", Model.UnreadCount, "bi-envelope", "Inbox", "#E57A9A", $"Okunma oranı %{readPct}", Model.UnreadCount > 0),
+                ("Gönderilen", Model.SentCount, "bi-send", "Sendbox", "#4FB3BF", $"Bugün +{Model.TodaySent}", false),
+                ("Taslak", Model.DraftCount, "bi-file-earmark-text", "Drafts", "#F2A65A", Model.DraftCount > 0 ? "Tamamlanmayı bekliyor" : "Taslak yok", false),
+                ("Yıldızlı", Model.StarredCount, "bi-star", "Starred", "#C9B458", "Önemli işaretlediklerin", false)
+                })
+        {
+            <div class="col-6 col-md">
+                <a class="mp-card stat-card d-block text-decoration-none @(alert ? "is-alert" : "")" asp-controller="Message" asp-action="@action">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <span class="stat-icon" style="background:@(color)22;color:@color"><i class="bi @icon"></i></span>
+                        <span class="text-muted small">@label</span>
+                    </div>
+                    <div class="stat-value">@value</div>
+                    <div class="stat-foot">@foot</div>
+                </a>
+            </div>
+        }
+    </div>
+
+    <!-- Haftalık aktivite + Kategori -->
+    <div class="row g-3 mb-3">
+        <div class="col-lg-7">
+            <div class="mp-card h-100">
+                <div class="dash-section-title">
+                    <h6>Haftalık aktivite</h6>
+                    <div class="small text-muted">
+                        <span class="me-3"><span class="legend-dot" style="background:#8B7FD6"></span>Gelen</span>
+                        <span><span class="legend-dot" style="background:#4FB3BF"></span>Giden</span>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <span class="trend @recvTrend.cls"><i class="bi @recvTrend.icon"></i> Gelen: @recvTrend.text</span>
+                    <span class="trend @sentTrend.cls"><i class="bi @sentTrend.icon"></i> Giden: @sentTrend.text</span>
+                    <span class="text-muted small align-self-center">(önceki 7 güne göre)</span>
+                </div>
+
+                <div class="bars">
+                    @foreach (var a in Model.Activity)
+                    {
+                        var hr = (int)Math.Round(a.Received * 100.0 / maxActivity);
+                        var hs = (int)Math.Round(a.Sent * 100.0 / maxActivity);
+                        <div class="bar-col @(a.Date.Date == DateTime.Today ? "is-today" : "")">
+                            <div class="bar-pair">
+                                <div class="bar recv" style="height:@(hr)%" title="@a.Date.ToString("d MMM", tr): @a.Received gelen"></div>
+                                <div class="bar sent" style="height:@(hs)%" title="@a.Date.ToString("d MMM", tr): @a.Sent giden"></div>
+                            </div>
+                            <div class="bar-label">@a.Date.ToString("ddd", tr)</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="mp-card h-100">
+                <div class="dash-section-title"><h6>Kategori dağılımı</h6></div>
+                @if (totalForPct == 0)
+                {
+                    <div class="empty-state"><i class="bi bi-pie-chart"></i>Gösterilecek veri yok.</div>
+                }
+                else
+                {
+                    <div class="donut-wrap">
+                        <div class="donut" style="background:conic-gradient(@Html.Raw(donutCss))">
+                            <div class="donut-center"><b>@totalForPct</b><span>mesaj</span></div>
+                        </div>
+                        <div class="flex-grow-1" style="min-width:150px">
+                            @for (int i = 0; i < Model.Categories.Count; i++)
+                            {
+                                var c = Model.Categories[i];
+                                var pct = (int)Math.Round(c.Count * 100.0 / totalForPct);
+                                <div class="cat-row">
+                                    <div class="name">
+                                        <span class="legend-dot" style="background:@palette[i % palette.Length];margin:0"></span>
+                                        <span class="t" title="@c.Name">@c.Name</span>
+                                    </div>
+                                    <span class="text-muted">@c.Count · %@pct</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Son mesajlar + Sağ kolon -->
+    <div class="row g-3">
+        <div class="col-lg-7">
+            <div class="mp-card">
+                <div class="dash-section-title">
+                    <h6>Son mesajlar</h6>
+                    <a class="dash-link" asp-controller="Message" asp-action="Inbox">Tümünü gör <i class="bi bi-arrow-right"></i></a>
+                </div>
+                @if (!Model.Recent.Any())
+                {
+                    <div class="empty-state"><i class="bi bi-inbox"></i>Henüz mesajınız yok.</div>
+                }
+                else
+                {
+                    foreach (var m in Model.Recent)
+                    {
+                        <a class="msg-row" asp-controller="Message" asp-action="Detail" asp-route-id="@m.MessageId">
+                            <div class="avatar" style="background:@AvatarColor(m.Sender)">
+                                @Initial(m.Sender)
+                                @if (!m.IsRead)
+                                {
+                                    <span class="unread-dot"></span>
+                                }
+                            </div>
+                            <div class="msg-main">
+                                <div class="msg-top">
+                                    <span class="msg-sender @(m.IsRead ? "" : "fw-bold")">@m.Sender</span>
+                                    <span class="text-muted small flex-shrink-0">@m.SendDate.ToString("d MMM", tr)</span>
+                                </div>
+                                <div class="msg-subject">
+                                    @m.Subject
+                                    @if (m.Category != null)
+                                    {
+                                        <span class="badge text-bg-light ms-1">@m.Category</span>
+                                    }
+                                </div>
+                            </div>
+                        </a>
+                    }
+                }
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <!-- Okunma durumu -->
+            <div class="mp-card mb-3">
+                <div class="dash-section-title">
+                    <h6>Gelen kutusu durumu</h6>
+                    <span class="small fw-semibold">%@readPct okundu</span>
+                </div>
+                <div class="read-bar"><div style="width:@(readPct)%"></div></div>
+                <div class="d-flex justify-content-between small text-muted mt-2">
+                    <span>@(Model.InboxCount - Model.UnreadCount) okunmuş</span>
+                    <span>@Model.UnreadCount okunmamış</span>
+                </div>
+            </div>
+
+            <!-- En çok yazanlar -->
+            <div class="mp-card mb-3">
+                <div class="dash-section-title"><h6>En çok mesaj gönderenler</h6></div>
+                @if (!Model.TopSenders.Any())
+                {
+                    <div class="text-muted small">Henüz veri yok.</div>
+                }
+                else
+                {
+                    foreach (var s in Model.TopSenders)
+                    {
+                        <div class="sender-row">
+                            <div class="avatar" style="background:@AvatarColor(s.Email)">@Initial(s.Email)</div>
+                            <div class="sender-meta">
+                                <div class="e" title="@s.Email">@s.Email</div>
+                                <div class="d">Son: @s.LastDate.ToString("d MMM", tr)</div>
+                            </div>
+                            <span class="sender-count">@s.Count</span>
+                        </div>
+                    }
+                }
+            </div>
+
+            <!-- Hızlı erişim -->
+            <div class="mp-card">
+                <div class="dash-section-title"><h6>Hızlı erişim</h6></div>
+                <div class="quick-grid">
+                    <a class="quick-btn" asp-controller="Message" asp-action="Compose"><i class="bi bi-pencil-square"></i> Yeni mesaj</a>
+                    <a class="quick-btn" asp-controller="Message" asp-action="Inbox"><i class="bi bi-inbox"></i> Gelen kutusu</a>
+                    <a class="quick-btn" asp-controller="Message" asp-action="Drafts"><i class="bi bi-file-earmark-text"></i> Taslaklar</a>
+                    <a class="quick-btn" asp-controller="Message" asp-action="Starred"><i class="bi bi-star"></i> Yıldızlılar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
