@@ -8,23 +8,202 @@ ASP.NET Core MVC, ASP.NET Core Identity ve Entity Framework Core ile geliştiril
 
 ---
 
-## İçindekiler
+## Ekran Görüntüleri
 
-1. [Teknolojiler](#1-teknolojiler)
-2. [Case Karşılama Tablosu](#2-case-karşılama-tablosu)
-3. [Kurulum ve Çalıştırma](#3-kurulum-ve-çalıştırma)
-4. [Veritabanı ve Migration Bilgisi](#4-veritabanı-ve-migration-bilgisi)
-5. [Özellikler (ekran görüntüleriyle)](#5-özellikler)
-6. [Güvenlik Önlemleri](#6-güvenlik-önlemleri)
-7. [Mimari ve Tasarım Kararları](#7-mimari-ve-tasarım-kararları)
-8. [Proje Yapısı](#8-proje-yapısı)
-9. [Rota / Endpoint Özeti](#9-rota--endpoint-özeti)
-10. [Bilinen Sınırlamalar ve Sapmalar](#10-bilinen-sınırlamalar-ve-sapmalar)
-11. [Hızlı Test Senaryosu](#11-hızlı-test-senaryosu)
+### Üyelik ve giriş
+
+<table>
+<tr>
+<td align="center" width="50%"><img src="docs/screenshots/kayit.png" alt="Kayıt ekranı" width="480"><br><sub><b>Kayıt ekranı</b></sub></td>
+<td align="center" width="50%"><img src="docs/screenshots/dogrulama-kodu.png" alt="6 haneli doğrulama kodu" width="480"><br><sub><b>6 haneli doğrulama kodu</b></sub></td>
+</tr>
+<tr>
+<td align="center" width="50%"><img src="docs/screenshots/dogrulama-maili.png" alt="Doğrulama e-postası" width="480"><br><sub><b>Doğrulama e-postası</b></sub></td>
+<td align="center" width="50%"><img src="docs/screenshots/giris.png" alt="Giriş ekranı" width="480"><br><sub><b>Giriş ekranı</b></sub></td>
+</tr>
+</table>
+
+### Şifre işlemleri
+
+<table>
+<tr>
+<td align="center" width="50%"><img src="docs/screenshots/sifremi-unuttum.png" alt="Şifremi unuttum" width="480"><br><sub><b>Şifremi unuttum</b></sub></td>
+<td align="center" width="50%"><img src="docs/screenshots/sifre-degistir.png" alt="Şifre değiştirme" width="480"><br><sub><b>Şifre değiştirme</b></sub></td>
+</tr>
+</table>
+
+### Mesaj yönetimi
+
+<table>
+<tr>
+<td align="center" width="50%"><img src="docs/screenshots/gelen-kutusu.png" alt="Gelen Kutusu" width="480"><br><sub><b>Gelen Kutusu</b></sub></td>
+<td align="center" width="50%"><img src="docs/screenshots/mesaj-detay.png" alt="Mesaj detayı" width="480"><br><sub><b>Mesaj detayı</b></sub></td>
+</tr>
+<tr>
+<td align="center" width="50%"><img src="docs/screenshots/gonderilenler.png" alt="Gönderilenler" width="480"><br><sub><b>Gönderilenler</b></sub></td>
+<td align="center" width="50%"><img src="docs/screenshots/taslaklar.png" alt="Taslaklar" width="480"><br><sub><b>Taslaklar</b></sub></td>
+</tr>
+<tr>
+<td align="center" width="50%"><img src="docs/screenshots/cop-kutusu.png" alt="Çöp Kutusu" width="480"><br><sub><b>Çöp Kutusu</b></sub></td>
+<td width="50%"></td>
+</tr>
+</table>
+
+### Profil
+
+<table>
+<tr>
+<td align="center" width="50%"><img src="docs/screenshots/profil.png" alt="Profilim ve fotoğraf yükleme" width="480"><br><sub><b>Profilim ve fotoğraf yükleme</b></sub></td>
+<td width="50%"></td>
+</tr>
+</table>
+
+### Dashboard
+
+<table>
+<tr>
+<td align="center" width="50%"><img src="docs/screenshots/dashboard.png" alt="Özet kartları ve grafikler" width="480"><br><sub><b>Özet kartları ve grafikler</b></sub></td>
+<td align="center" width="50%"><img src="docs/screenshots/dashboard1.png" alt="Son mesajlar ve en çok yazanlar" width="480"><br><sub><b>Son mesajlar ve en çok yazanlar</b></sub></td>
+</tr>
+</table>
+
+### Hata sayfaları
+
+<table>
+<tr>
+<td align="center" width="50%"><img src="docs/screenshots/giris-hata.png" alt="401 · Giriş gerekli" width="480"><br><sub><b>401 · Giriş gerekli</b></sub></td>
+<td width="50%"></td>
+</tr>
+</table>
 
 ---
 
-## 1. Teknolojiler
+## İçindekiler
+
+1. [Ekran Görüntüleri](#ekran-görüntüleri)
+2. [Özellikler](#özellikler)
+3. [Case Karşılama Tablosu](#case-karşılama-tablosu)
+4. [Teknolojiler](#teknolojiler)
+5. [Kurulum ve Çalıştırma](#kurulum-ve-çalıştırma)
+6. [Veritabanı ve Migration Bilgisi](#veritabanı-ve-migration-bilgisi)
+7. [Güvenlik Önlemleri](#güvenlik-önlemleri)
+8. [Mimari ve Tasarım Kararları](#mimari-ve-tasarım-kararları)
+9. [Proje Yapısı](#proje-yapısı)
+10. [Rota / Endpoint Özeti](#rota--endpoint-özeti)
+11. [Bilinen Sınırlamalar ve Sapmalar](#bilinen-sınırlamalar-ve-sapmalar)
+12. [Hızlı Test Senaryosu](#hızlı-test-senaryosu)
+
+---
+
+## Özellikler
+
+> Ekran görüntüleri için sayfanın en üstündeki [Ekran Görüntüleri](#ekran-görüntüleri) bölümüne bakın.
+
+### Üyelik ve hesap doğrulama (Case 01)
+
+- **Kayıt:** Ad, soyad, kullanıcı adı, e-posta ve şifre ile kayıt. Şifre Identity'nin parola kurallarına göre doğrulanır; hatalar formda gösterilir.
+- **Doğrulama kodu:** Kayıt anında kriptografik olarak güvenli rastgele **6 haneli kod** üretilir, e-postayla gönderilir ve kullanıcıya kaydedilir. E-posta gönderilemezse yarım kayıt bırakılmaz (kullanıcı silinir).
+- **Doğrulama ekranı:** Kod girilene kadar giriş yapılamaz. Doğru kodda hesap onaylanır, kod silinir, kullanıcı giriş sayfasına yönlenir. Hatalı kodda genel bir hata mesajı gösterilir.
+- **Giriş:** Kullanıcı adı + şifre. Doğrulanmamış hesap doğru şifreyle denerse doğrulama ekranına yönlendirilir. Hatalı denemelerde Identity **hesap kilitleme** devrededir. Hata mesajı kullanıcının varlığını sızdırmaz ("Kullanıcı adı veya şifre hatalı.").
+- **Çıkış:** Anti-forgery korumalı **POST** ile yapılır.
+- **Korumalı sayfalar:** Mesaj, profil ve dashboard sayfaları `[Authorize]` ile korunur. Girişsiz erişimde giriş sayfasına yönlendirme yapılır; AJAX isteklerinde yönlendirme yerine `401` döner.
+
+### Şifre işlemleri (Case 02)
+
+- **Şifremi Unuttum:** E-posta adresi girilir. Kayıtlı ve doğrulanmış hesaba, **30 dakika geçerli, tek kullanımlık** sıfırlama bağlantısı e-postayla gönderilir. Adres kayıtlı olsa da olmasa da ekranda **aynı mesaj** gösterilir (kullanıcı listeleme saldırısına karşı).
+- **Yeni şifre belirleme:** Bağlantı açıldığında token önce doğrulanır (harcanmadan). Geçerliyse form açılır; şifre kaydedilince token ölür (`SecurityStamp` yenilenir), aynı bağlantı bir daha çalışmaz.
+- **Geçersiz / süresi dolmuş / kullanılmış bağlantı:** Hata fırlatmak yerine "Bağlantı geçersiz" ekranı ve "Yeni bağlantı iste" düğmesi gösterilir.
+- **Şifre değiştirme:** Giriş yapmış kullanıcı **mevcut şifresini** doğrulayarak yeni şifre belirler. Başarılı değişimden sonra oturum açık kalır, diğer cihazlardaki oturumlar düşer.
+
+### Gelen Kutusu ve mesaj detayı (Case 03)
+
+- Gelen kutusu **yalnızca oturum açan alıcının** mesajlarını listeler; en yeni mesaj üstte olacak şekilde tarihe göre sıralanır.
+- Okunmamış mesajlar kalın ve noktalı gösterilir; **okunmamış sayısı** hem liste başlığında hem sidebar rozetinde veritabanından hesaplanır.
+- **Detay sayfası:** Mesaj açıldığında, alıcı ise otomatik **okundu** işaretlenir. Gönderen, alıcı, tarih, kategori ve durum bilgisi gösterilir.
+- **Okundu / okunmadı** işaretleme, **yıldızla / yıldızı kaldır** işlemleri tekli ve toplu seçimle çalışır.
+- **Arama:** Gönderen, konu ve içerik üzerinde anlık arama (liste ve navbar araması senkron).
+- **Filtreler:** Tümü / Okunmamış / Yıldızlı ve **kategori** filtresi. Sayfalama.
+- Kısayollar: `j` / `k` ile satırlar arasında gezinme.
+
+### Yeni mesaj ve gönderim (Case 04)
+
+- **Gönderen** formdan değil, **oturum açan Identity hesabından** alınır; kullanıcı başka biri adına mesaj gönderemez.
+- **Doğrulama:** Alıcı (geçerli e-posta, **sistemde kayıtlı kullanıcı olmalı**), kategori (veritabanında var olmalı), konu (en fazla 200 karakter) ve içerik zorunludur.
+- **Zengin metin içerik:** İçerik HTML olarak saklanır ve kaydedilirken **HtmlSanitizer** ile temizlenir (XSS koruması).
+- Gönderilen mesaj alıcının **Gelen Kutusu**na, göndericinin **Gönderilenler** alanına yansır.
+
+### Gönderilenler, Yıldızlılar, Taslaklar, Çöp Kutusu, Yanıtla / İlet (Case 05)
+
+- **Gönderilenler:** Yalnızca kullanıcının gönderdiği mesajlar.
+- **Yıldızlı Mesajlar:** Kullanıcının yıldızladığı mesajlar (gelen ve giden). Yıldız **taraf bazlıdır**: bir tarafın yıldızı diğerini etkilemez.
+- **Taslaklar:** Mesaj, zorunlu alanlar eksik olsa bile taslak olarak kaydedilebilir; taslak yeniden açılıp düzenlenir ve gönderilir. Taslaklar toplu silinebilir.
+- **Çöp Kutusu:** Mesaj çöpe taşınır, **geri alınabilir** veya **kalıcı olarak silinir**. Silme taraf bazlıdır: biri silince diğer tarafın kutusunu etkilemez; iki taraf da sildiğinde kayıt fiziksel olarak kaldırılır. Silme işleminde "Geri Al" seçeneği sunulur.
+- **Yanıtla:** Alıcı ve kategori otomatik dolar, konu `Re:` ile başlar, orijinal mesaj alıntılanır.
+- **İlet:** Konu `Fwd:` ile başlar, orijinal mesaj ("İletilen mesaj" bilgisiyle) içeriğe eklenir, alıcı boştur.
+- Yanıtla / İlet, başka birinin mesajı için çalışmaz (`404`) ve orijinal mesajı değiştirmez; yeni bir mesaj oluşturur.
+
+### Kategoriler, profil ve hesap bilgileri (Case 06)
+
+- **Kategoriler** `Categories` tablosundan gelir; mesaj oluştururken seçilir, Inbox satırlarında etiket olarak görünür.
+- **Sidebar etiketleri** veritabanındaki kategorilerden üretilir; her etiketin yanında o kategorideki **okunmamış mesaj sayısı** gösterilir, seçili etiket vurgulanır. Etikete tıklamak Gelen Kutusunu o kategoriye göre süzer.
+- **Profilim:** Ad, soyad ve "Hakkımda" açıklaması güncellenir. Kullanıcı adı ve e-posta değiştirilemez (salt okunur).
+- **Profil fotoğrafı:** JPG / PNG / WebP yüklenebilir (en fazla 2 MB). Dosya türü uzantıya değil **dosya içeriğine (magic bytes)** bakılarak doğrulanır; dosya adı rastgele (GUID) üretilir; eski fotoğraf silinir. Fotoğraf kaldırılabilir.
+- **Navbar:** Oturum açan kullanıcının adı, soyadı ve kullanıcı adı gösterilir; çıkış buradan yapılır.
+- **Sidebar sayaçları** (okunmamış, taslak, yıldızlı, çöp) veritabanından hesaplanır.
+
+### Dashboard (Case 07)
+
+- **Karşılama:** Günün saatine göre selamlama, tarih ve hızlı eylemler (Yeni mesaj, Gelen kutusu).
+- **Özet kartları (gerçek verilerden):**
+  - **Gelen kutusu** adedi, **geçen haftaya göre yüzde değişimiyle** (trend rozeti)
+  - **Okunmamış** adedi ve okunma oranı çubuğu
+  - **Gönderilen** adedi ve geçen haftaya göre değişim
+  - **Bugün gelen** mesaj sayısı, altında **taslak** ve **yıldızlı** adetleri
+  - Kartlar ilgili listeye bağlanır.
+- **Mesaj trafiği grafiği:** Son 14 günün günlük **gelen** ve **gönderilen** mesaj sayıları (Chart.js, çubuk grafik). Mesaj olmayan günler 0 olarak gösterilir.
+- **Kategori dağılımı grafiği:** Gelen kutusundaki mesajların kategorilere göre halka grafiği; kategorisiz mesajlar "Kategorisiz" olarak sayılır.
+- **Son mesajlar:** Gelen kutusundaki en yeni mesajlar (avatar, kategori etiketi, zaman; okunmamışlar kalın). Tıklayınca mesaj açılır.
+- **En çok yazanlar:** Gelen kutusuna en çok mesaj gönderen 5 kişi, toplam ve okunmamış sayısıyla. Bir kişiye tıklamak Gelen Kutusunu o kişiye göre arar.
+- Sayılar sunucuda `COUNT` / `GROUP BY` sorgularıyla hesaplanır; listeler yalnızca gerekli sütunları çeker. Haftalık karşılaştırma, tek bir 14 günlük sorgudan türetilir.
+
+### Hata sayfaları (Case 01)
+
+- **401** (giriş gerekli), **403** (erişim reddedildi) ve **404** (sayfa bulunamadı) için temaya uygun özel sayfalar bulunur. HTTP durum kodu korunur.
+- Yetkisiz erişimde `AccessDeniedPath`, bulunamayan adreslerde `UseStatusCodePagesWithReExecute` devreye girer.
+- Başkasına ait bir mesajın adresi denendiğinde mesajın varlığı bile açıklanmaz; **404** döner.
+
+---
+
+## Case Karşılama Tablosu
+
+| # | Case maddesi | Durum | Nerede / Nasıl |
+|---|---|---|---|
+| 01 | Identity ile Register / Login / Logout | ✅ | `RegisterController`, `LoginController` |
+| 01 | Kayıtta 6 haneli doğrulama kodu, doğrulamadan giriş yok | ✅ | Kod e-postayla gider; `RequireConfirmedEmail = true` |
+| 01 | Giriş gerektiren sayfalar korunur; 401 / 403 / 404 ekranları | ✅ | `[Authorize]`, `ErrorPagesController`, status code yönlendirmesi |
+| 02 | "Şifremi Unuttum" ile e-postayla tek kullanımlık yenileme bağlantısı | ✅ | Identity token'ı (30 dk, tek kullanımlık) |
+| 02 | Mevcut şifreyi değiştirme; geçersiz/süresi dolmuş bağlantılar güvenli ele alınır | ✅ | `ProfileController.ChangePassword`, `ResetPasswordInvalid` ekranı |
+| 02 | Başkasının mesajına URL/parametre ile erişilemez | ✅ | Her sorguda sahiplik filtresi, `NotFound()` |
+| 03 | Gelen mesajlar yalnızca oturum açan alıcıya göre listelenir | ✅ | `InboxOf(email)` |
+| 03 | Detay, okundu/okunmadı, yıldızla / yıldızı kaldır | ✅ | `Detail`, `MarkAsRead/Unread`, `ToggleStar` |
+| 03 | Arama, kategori filtresi, tarihe göre sıralama, okunmamış sayısı dinamik | ✅ | Liste en yeni mesaj üstte; sayaçlar veritabanından |
+| 04 | Gönderen Identity hesabından; alıcı/konu/içerik doğrulanır | ✅ | `CreateMessageViewModel` + sunucu doğrulaması |
+| 04 | Kayıtlı kullanıcıya mesaj → alıcının Gelen Kutusu, göndericinin Gönderilenler | ✅ | Tek `Messages` kaydı, iki tarafın görünümü |
+| 04 | SMTP ile gerçek e-posta adresine mesaj gönderimi | ⚠️ | Mesaj gönderimi **yalnızca veritabanı üzerinden**. SMTP, doğrulama kodu ve şifre sıfırlamada kullanılır. Bkz. [Sapmalar](#bilinen-sınırlamalar-ve-sapmalar) |
+| 05 | Gönderilenler ve Yıldızlılar kullanıcıya özel | ✅ | `SentOf`, `StarredOf` |
+| 05 | Taslak kaydet / yeniden düzenle / gönder | ✅ | `SaveDraft`, `CreateMessage?draftId=` |
+| 05 | Çöp kutusuna taşı / geri al / kalıcı sil | ✅ | `MoveToTrash`, `Restore`, `DeletePermanently` |
+| 05 | Yanıtla ve İlet | ✅ | `Reply`, `Forward` |
+| 06 | Kategoriler veritabanından; mesajda seçilir; kategoriye göre filtre | ✅ | `Categories` tablosu, sidebar etiketleri |
+| 06 | Ad, soyad, profil fotoğrafı güncelleme | ✅ | `ProfileController` |
+| 06 | Navbar ve profilde oturum açan kullanıcının bilgileri | ✅ | Header ViewComponent, Profilim |
+| 07 | Gelen/gönderilen/okunmamış/yıldızlı/taslak adetleri gerçek veriden | ✅ | `DashboardController` |
+| 07 | Son mesajlar ve kategori dağılımı | ✅ | Dashboard (14 günlük trafik grafiği, kategori halka grafiği, son mesajlar listesi) |
+| 08 | İsteğe bağlı: dosya eki, çoklu alıcı, CC/BCC, arşiv, bildirim | ❌ | Kapsam dışı bırakıldı |
+
+---
+
+## Teknolojiler
 
 | Alan | Kullanılan |
 |---|---|
@@ -40,36 +219,7 @@ ASP.NET Core MVC, ASP.NET Core Identity ve Entity Framework Core ile geliştiril
 
 ---
 
-## 2. Case Karşılama Tablosu
-
-| # | Case maddesi | Durum | Nerede / Nasıl |
-|---|---|---|---|
-| 01 | Identity ile Register / Login / Logout | ✅ | `RegisterController`, `LoginController` |
-| 01 | Kayıtta 6 haneli doğrulama kodu, doğrulamadan giriş yok | ✅ | Kod e-postayla gider; `RequireConfirmedEmail = true` |
-| 01 | Giriş gerektiren sayfalar korunur; 401 / 403 / 404 ekranları | ✅ | `[Authorize]`, `ErrorPagesController`, status code yönlendirmesi |
-| 02 | "Şifremi Unuttum" ile e-postayla tek kullanımlık yenileme bağlantısı | ✅ | Identity token'ı (30 dk, tek kullanımlık) |
-| 02 | Mevcut şifreyi değiştirme; geçersiz/süresi dolmuş bağlantılar güvenli ele alınır | ✅ | `ProfileController.ChangePassword`, `ResetPasswordInvalid` ekranı |
-| 02 | Başkasının mesajına URL/parametre ile erişilemez | ✅ | Her sorguda sahiplik filtresi, `NotFound()` |
-| 03 | Gelen mesajlar yalnızca oturum açan alıcıya göre listelenir | ✅ | `InboxOf(email)` |
-| 03 | Detay, okundu/okunmadı, yıldızla / yıldızı kaldır | ✅ | `Detail`, `MarkAsRead/Unread`, `ToggleStar` |
-| 03 | Arama, kategori filtresi, tarihe göre sıralama, okunmamış sayısı dinamik | ✅ | Liste en yeni mesaj üstte; sayaçlar veritabanından |
-| 04 | Gönderen Identity hesabından; alıcı/konu/içerik doğrulanır | ✅ | `CreateMessageViewModel` + sunucu doğrulaması |
-| 04 | Kayıtlı kullanıcıya mesaj → alıcının Gelen Kutusu, göndericinin Gönderilenler | ✅ | Tek `Messages` kaydı, iki tarafın görünümü |
-| 04 | SMTP ile gerçek e-posta adresine mesaj gönderimi | ⚠️ | Mesaj gönderimi **yalnızca veritabanı üzerinden**. SMTP, doğrulama kodu ve şifre sıfırlamada kullanılır. Bkz. [Sapmalar](#10-bilinen-sınırlamalar-ve-sapmalar) |
-| 05 | Gönderilenler ve Yıldızlılar kullanıcıya özel | ✅ | `SentOf`, `StarredOf` |
-| 05 | Taslak kaydet / yeniden düzenle / gönder | ✅ | `SaveDraft`, `CreateMessage?draftId=` |
-| 05 | Çöp kutusuna taşı / geri al / kalıcı sil | ✅ | `MoveToTrash`, `Restore`, `DeletePermanently` |
-| 05 | Yanıtla ve İlet | ✅ | `Reply`, `Forward` |
-| 06 | Kategoriler veritabanından; mesajda seçilir; kategoriye göre filtre | ✅ | `Categories` tablosu, sidebar etiketleri |
-| 06 | Ad, soyad, profil fotoğrafı güncelleme | ✅ | `ProfileController` |
-| 06 | Navbar ve profilde oturum açan kullanıcının bilgileri | ✅ | Header ViewComponent, Profilim |
-| 07 | Gelen/gönderilen/okunmamış/yıldızlı/taslak adetleri gerçek veriden | ✅ | `DashboardController` |
-| 07 | Son mesajlar ve kategori dağılımı | ✅ | Dashboard (14 günlük trafik grafiği, kategori halka grafiği, son mesajlar listesi) |
-| 08 | İsteğe bağlı: dosya eki, çoklu alıcı, CC/BCC, arşiv, bildirim | ❌ | Kapsam dışı bırakıldı |
-
----
-
-## 3. Kurulum ve Çalıştırma
+## Kurulum ve Çalıştırma
 
 ### Gereksinimler
 
@@ -156,7 +306,7 @@ Adres, `Properties/launchSettings.json` içindeki porta göredir (örn. `https:/
 
 ---
 
-## 4. Veritabanı ve Migration Bilgisi
+## Veritabanı ve Migration Bilgisi
 
 - **Yaklaşım:** Code First. Veritabanı, `Migrations` klasöründeki migration'lardan oluşur; elle şema oluşturmaya gerek yoktur.
 - **Veritabanı adı:** `IdentityEmailDb`
@@ -213,109 +363,7 @@ erDiagram
 
 ---
 
-## 5. Özellikler
-
-> Görseller `docs/screenshots/` klasöründen yüklenir.
-
-### 5.1 Üyelik ve hesap doğrulama (Case 01)
-
-- **Kayıt:** Ad, soyad, kullanıcı adı, e-posta ve şifre ile kayıt. Şifre Identity'nin parola kurallarına göre doğrulanır; hatalar formda gösterilir.
-- **Doğrulama kodu:** Kayıt anında kriptografik olarak güvenli rastgele **6 haneli kod** üretilir, e-postayla gönderilir ve kullanıcıya kaydedilir. E-posta gönderilemezse yarım kayıt bırakılmaz (kullanıcı silinir).
-- **Doğrulama ekranı:** Kod girilene kadar giriş yapılamaz. Doğru kodda hesap onaylanır, kod silinir, kullanıcı giriş sayfasına yönlenir. Hatalı kodda genel bir hata mesajı gösterilir.
-- **Giriş:** Kullanıcı adı + şifre. Doğrulanmamış hesap doğru şifreyle denerse doğrulama ekranına yönlendirilir. Hatalı denemelerde Identity **hesap kilitleme** devrededir. Hata mesajı kullanıcının varlığını sızdırmaz ("Kullanıcı adı veya şifre hatalı.").
-- **Çıkış:** Anti-forgery korumalı **POST** ile yapılır.
-- **Korumalı sayfalar:** Mesaj, profil ve dashboard sayfaları `[Authorize]` ile korunur. Girişsiz erişimde giriş sayfasına yönlendirme yapılır; AJAX isteklerinde yönlendirme yerine `401` döner.
-
-<p align="center"><img src="docs/screenshots/kayit.png" width="700"><br><em>Kayıt ekranı</em></p>
-<p align="center"><img src="docs/screenshots/dogrulama-kodu.png" width="700"><br><em>6 haneli doğrulama kodu ekranı</em></p>
-<p align="center"><img src="docs/screenshots/dogrulama-maili.png" width="700"><br><em>Gelen doğrulama e-postası</em></p>
-<p align="center"><img src="docs/screenshots/giris.png" width="700"><br><em>Giriş ekranı</em></p>
-
-### 5.2 Şifre işlemleri (Case 02)
-
-- **Şifremi Unuttum:** E-posta adresi girilir. Kayıtlı ve doğrulanmış hesaba, **30 dakika geçerli, tek kullanımlık** sıfırlama bağlantısı e-postayla gönderilir. Adres kayıtlı olsa da olmasa da ekranda **aynı mesaj** gösterilir (kullanıcı listeleme saldırısına karşı).
-- **Yeni şifre belirleme:** Bağlantı açıldığında token önce doğrulanır (harcanmadan). Geçerliyse form açılır; şifre kaydedilince token ölür (`SecurityStamp` yenilenir), aynı bağlantı bir daha çalışmaz.
-- **Geçersiz / süresi dolmuş / kullanılmış bağlantı:** Hata fırlatmak yerine "Bağlantı geçersiz" ekranı ve "Yeni bağlantı iste" düğmesi gösterilir.
-- **Şifre değiştirme:** Giriş yapmış kullanıcı **mevcut şifresini** doğrulayarak yeni şifre belirler. Başarılı değişimden sonra oturum açık kalır, diğer cihazlardaki oturumlar düşer.
-
-<p align="center"><img src="docs/screenshots/sifremi-unuttum.png" width="700"><br><em>Şifremi unuttum</em></p>
-<p align="center"><img src="docs/screenshots/sifre-degistir.png" width="700"><br><em>Oturum açıkken şifre değiştirme</em></p>
-
-### 5.3 Gelen Kutusu ve mesaj detayı (Case 03)
-
-- Gelen kutusu **yalnızca oturum açan alıcının** mesajlarını listeler; en yeni mesaj üstte olacak şekilde tarihe göre sıralanır.
-- Okunmamış mesajlar kalın ve noktalı gösterilir; **okunmamış sayısı** hem liste başlığında hem sidebar rozetinde veritabanından hesaplanır.
-- **Detay sayfası:** Mesaj açıldığında, alıcı ise otomatik **okundu** işaretlenir. Gönderen, alıcı, tarih, kategori ve durum bilgisi gösterilir.
-- **Okundu / okunmadı** işaretleme, **yıldızla / yıldızı kaldır** işlemleri tekli ve toplu seçimle çalışır.
-- **Arama:** Gönderen, konu ve içerik üzerinde anlık arama (liste ve navbar araması senkron).
-- **Filtreler:** Tümü / Okunmamış / Yıldızlı ve **kategori** filtresi. Sayfalama.
-- Kısayollar: `j` / `k` ile satırlar arasında gezinme.
-
-<p align="center"><img src="docs/screenshots/gelen-kutusu.png" width="800"><br><em>Gelen Kutusu</em></p>
-<p align="center"><img src="docs/screenshots/mesaj-detay.png" width="800"><br><em>Mesaj detayı</em></p>
-
-### 5.4 Yeni mesaj ve gönderim (Case 04)
-
-- **Gönderen** formdan değil, **oturum açan Identity hesabından** alınır; kullanıcı başka biri adına mesaj gönderemez.
-- **Doğrulama:** Alıcı (geçerli e-posta, **sistemde kayıtlı kullanıcı olmalı**), kategori (veritabanında var olmalı), konu (en fazla 200 karakter) ve içerik zorunludur.
-- **Zengin metin içerik:** İçerik HTML olarak saklanır ve kaydedilirken **HtmlSanitizer** ile temizlenir (XSS koruması).
-- Gönderilen mesaj alıcının **Gelen Kutusu**na, göndericinin **Gönderilenler** alanına yansır.
-
-
-### 5.5 Gönderilenler, Yıldızlılar, Taslaklar, Çöp Kutusu, Yanıtla / İlet (Case 05)
-
-- **Gönderilenler:** Yalnızca kullanıcının gönderdiği mesajlar.
-- **Yıldızlı Mesajlar:** Kullanıcının yıldızladığı mesajlar (gelen ve giden). Yıldız **taraf bazlıdır**: bir tarafın yıldızı diğerini etkilemez.
-- **Taslaklar:** Mesaj, zorunlu alanlar eksik olsa bile taslak olarak kaydedilebilir; taslak yeniden açılıp düzenlenir ve gönderilir. Taslaklar toplu silinebilir.
-- **Çöp Kutusu:** Mesaj çöpe taşınır, **geri alınabilir** veya **kalıcı olarak silinir**. Silme taraf bazlıdır: biri silince diğer tarafın kutusunu etkilemez; iki taraf da sildiğinde kayıt fiziksel olarak kaldırılır. Silme işleminde "Geri Al" seçeneği sunulur.
-- **Yanıtla:** Alıcı ve kategori otomatik dolar, konu `Re:` ile başlar, orijinal mesaj alıntılanır.
-- **İlet:** Konu `Fwd:` ile başlar, orijinal mesaj ("İletilen mesaj" bilgisiyle) içeriğe eklenir, alıcı boştur.
-- Yanıtla / İlet, başka birinin mesajı için çalışmaz (`404`) ve orijinal mesajı değiştirmez; yeni bir mesaj oluşturur.
-
-<p align="center"><img src="docs/screenshots/gonderilenler.png" width="800"><br><em>Gönderilenler</em></p>
-<p align="center"><img src="docs/screenshots/taslaklar.png" width="800"><br><em>Taslaklar</em></p>
-<p align="center"><img src="docs/screenshots/cop-kutusu.png" width="800"><br><em>Çöp kutusu</em></p>
-
-### 5.6 Kategoriler, profil ve hesap bilgileri (Case 06)
-
-- **Kategoriler** `Categories` tablosundan gelir; mesaj oluştururken seçilir, Inbox satırlarında etiket olarak görünür.
-- **Sidebar etiketleri** veritabanındaki kategorilerden üretilir; her etiketin yanında o kategorideki **okunmamış mesaj sayısı** gösterilir, seçili etiket vurgulanır. Etikete tıklamak Gelen Kutusunu o kategoriye göre süzer.
-- **Profilim:** Ad, soyad ve "Hakkımda" açıklaması güncellenir. Kullanıcı adı ve e-posta değiştirilemez (salt okunur).
-- **Profil fotoğrafı:** JPG / PNG / WebP yüklenebilir (en fazla 2 MB). Dosya türü uzantıya değil **dosya içeriğine (magic bytes)** bakılarak doğrulanır; dosya adı rastgele (GUID) üretilir; eski fotoğraf silinir. Fotoğraf kaldırılabilir.
-- **Navbar:** Oturum açan kullanıcının adı, soyadı ve kullanıcı adı gösterilir; çıkış buradan yapılır.
-- **Sidebar sayaçları** (okunmamış, taslak, yıldızlı, çöp) veritabanından hesaplanır.
-
-<p align="center"><img src="docs/screenshots/profil.png" width="800"><br><em>Profilim ve fotoğraf yükleme</em></p>
-
-### 5.7 Dashboard (Case 07)
-
-- **Karşılama:** Günün saatine göre selamlama, tarih ve hızlı eylemler (Yeni mesaj, Gelen kutusu).
-- **Özet kartları (gerçek verilerden):**
-  - **Gelen kutusu** adedi, **geçen haftaya göre yüzde değişimiyle** (trend rozeti)
-  - **Okunmamış** adedi ve okunma oranı çubuğu
-  - **Gönderilen** adedi ve geçen haftaya göre değişim
-  - **Bugün gelen** mesaj sayısı, altında **taslak** ve **yıldızlı** adetleri
-  - Kartlar ilgili listeye bağlanır.
-- **Mesaj trafiği grafiği:** Son 14 günün günlük **gelen** ve **gönderilen** mesaj sayıları (Chart.js, çubuk grafik). Mesaj olmayan günler 0 olarak gösterilir.
-- **Kategori dağılımı grafiği:** Gelen kutusundaki mesajların kategorilere göre halka grafiği; kategorisiz mesajlar "Kategorisiz" olarak sayılır.
-- **Son mesajlar:** Gelen kutusundaki en yeni mesajlar (avatar, kategori etiketi, zaman; okunmamışlar kalın). Tıklayınca mesaj açılır.
-- **En çok yazanlar:** Gelen kutusuna en çok mesaj gönderen 5 kişi, toplam ve okunmamış sayısıyla. Bir kişiye tıklamak Gelen Kutusunu o kişiye göre arar.
-- Sayılar sunucuda `COUNT` / `GROUP BY` sorgularıyla hesaplanır; listeler yalnızca gerekli sütunları çeker. Haftalık karşılaştırma, tek bir 14 günlük sorgudan türetilir.
-
-<p align="center"><img src="docs/screenshots/dashboard.png" width="800"><br><em>Dashboard: özet kartları ve grafikler</em></p>
-<p align="center"><img src="docs/screenshots/dashboard1.png" width="800"><br><em>Dashboard: son mesajlar ve en çok yazanlar</em></p>
-
-### 5.8 Hata sayfaları (Case 01)
-
-- **401** (giriş gerekli), **403** (erişim reddedildi) ve **404** (sayfa bulunamadı) için temaya uygun özel sayfalar bulunur. HTTP durum kodu korunur.
-- Yetkisiz erişimde `AccessDeniedPath`, bulunamayan adreslerde `UseStatusCodePagesWithReExecute` devreye girer.
-- Başkasına ait bir mesajın adresi denendiğinde mesajın varlığı bile açıklanmaz; **404** döner.
-
-<p align="center"><img src="docs/screenshots/giris-hata.png" width="600"><br><em>401 · Giriş gerekli sayfası</em></p>
-
----
-
-## 6. Güvenlik Önlemleri
+## Güvenlik Önlemleri
 
 | Tehdit | Önlem |
 |---|---|
@@ -335,7 +383,7 @@ erDiagram
 
 ---
 
-## 7. Mimari ve Tasarım Kararları
+## Mimari ve Tasarım Kararları
 
 **Taraf bazlı mesaj durumu.** Bir mesaj tek kayıttır ama gönderen ve alıcı onu ayrı ayrı yönetir. Yıldız, çöp ve silme için ayrı `...BySender` / `...ByReceiver` bayrakları tutulur. Böylece bir tarafın silmesi diğerinin kutusunu bozmaz. İki taraf da sildiğinde satır fiziksel olarak kaldırılır. Taslaklar karşı tarafı olmadığı için doğrudan silinir.
 
@@ -353,7 +401,7 @@ erDiagram
 
 ---
 
-## 8. Proje Yapısı
+## Proje Yapısı
 
 ```
 MYAcademy_IdentityEmailProject
@@ -380,7 +428,7 @@ MYAcademy_IdentityEmailProject
 
 ---
 
-## 9. Rota / Endpoint Özeti
+## Rota / Endpoint Özeti
 
 | Controller | Action | Yöntem | Açıklama |
 |---|---|---|---|
@@ -408,7 +456,7 @@ MYAcademy_IdentityEmailProject
 
 ---
 
-## 10. Bilinen Sınırlamalar ve Sapmalar
+## Bilinen Sınırlamalar ve Sapmalar
 
 Dürüst olmak gerekirse aşağıdakiler bilinçli tercihler veya kapsam dışı bırakılan kısımlardır:
 
@@ -423,7 +471,7 @@ Dürüst olmak gerekirse aşağıdakiler bilinçli tercihler veya kapsam dışı
 
 ---
 
-## 11. Hızlı Test Senaryosu
+## Hızlı Test Senaryosu
 
 1. **İki hesap açın** (A ve B). Her biri için kayıt olun, e-postadan gelen kodu girin.
 2. Doğrulama yapmadan giriş yapmayı deneyin → doğrulama ekranına yönlenmelisiniz.
