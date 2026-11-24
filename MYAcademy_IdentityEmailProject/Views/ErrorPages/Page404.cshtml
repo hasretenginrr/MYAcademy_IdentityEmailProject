@@ -1,15 +1,349 @@
-﻿
-@{
+﻿@{
     Layout = null;
+    var isAuth = User.Identity?.IsAuthenticated == true;
 }
-
 <!DOCTYPE html>
-
-<html>
+<html lang="tr">
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Page404</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>404 · Mailora</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* Mailora teması. Razor'da CSS içindeki at işareti iki kez yazılır. */
+        :root {
+            --bg: #F8F9FD;
+            --card: #FFFFFF;
+            --accent: #8B7FD6;
+            --accent-dark: #7467C7;
+            --lavender: #EAE6FA;
+            --blue: #E8F2FF;
+            --mint: #E3F5EE;
+            --text: #303348;
+            --muted: #85899B;
+            --border: #ECEBF5;
+            --shadow-lg: 0 24px 60px rgba(91, 80, 170, .16);
+            --ease: cubic-bezier(.4, 0, .2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            min-height: 100%;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 14px;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        a {
+            color: var(--accent-dark);
+            text-decoration: none;
+        }
+
+            a:hover {
+                color: var(--accent);
+            }
+
+        button {
+            font-family: inherit;
+        }
+
+        .auth-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+            .auth-bg span {
+                position: absolute;
+                border-radius: 50%;
+                filter: blur(60px);
+                opacity: .75;
+            }
+
+            .auth-bg .g1 {
+                width: 520px;
+                height: 520px;
+                background: var(--lavender);
+                top: -180px;
+                left: -140px;
+            }
+
+            .auth-bg .g2 {
+                width: 460px;
+                height: 460px;
+                background: var(--blue);
+                bottom: -200px;
+                right: -120px;
+            }
+
+            .auth-bg .g3 {
+                width: 300px;
+                height: 300px;
+                background: var(--mint);
+                top: 40%;
+                left: 55%;
+                opacity: .5;
+            }
+
+        .page {
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 20px;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text);
+            margin-bottom: 24px;
+        }
+
+            .brand:hover {
+                color: var(--text);
+            }
+
+        .brand-logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            background: linear-gradient(135deg, #A99DF0 0%, var(--accent) 55%, #6F63C4 100%);
+            display: grid;
+            place-items: center;
+            color: #fff;
+            font-size: 19px;
+            box-shadow: 0 6px 16px rgba(139, 127, 214, .35);
+        }
+
+        .brand-name {
+            font-weight: 800;
+            font-size: 22px;
+            letter-spacing: -.4px;
+        }
+
+            .brand-name span {
+                color: var(--accent);
+            }
+
+        .card-x {
+            position: relative;
+            width: 100%;
+            max-width: 480px;
+            text-align: center;
+            background: var(--card);
+            border-radius: 28px;
+            box-shadow: var(--shadow-lg);
+            padding: 44px 40px 34px;
+            overflow: hidden;
+            animation: cardIn .5s var(--ease);
+        }
+
+            .card-x::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                height: 160px;
+                pointer-events: none;
+                background: radial-gradient(circle, rgba(255, 255, 255, .85) 1.4px, transparent 2px) 0 0 / 22px 22px, linear-gradient(180deg, #EFEBFC 0%, rgba(239, 235, 252, 0) 100%);
+            }
+
+            .card-x > * {
+                position: relative;
+            }
+
+        @@keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        .err-ic {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 6px;
+            border-radius: 20px;
+            display: grid;
+            place-items: center;
+            font-size: 28px;
+            color: var(--accent-dark);
+            background: var(--lavender);
+        }
+
+        .err-code {
+            font-size: 88px;
+            font-weight: 800;
+            letter-spacing: -5px;
+            line-height: 1.05;
+            background: linear-gradient(135deg, #A99DF0 0%, var(--accent-dark) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -.5px;
+            margin: 4px 0 10px;
+        }
+
+        .sub {
+            color: var(--muted);
+            font-size: 14.5px;
+            line-height: 1.65;
+            margin: 0 auto 26px;
+            max-width: 360px;
+        }
+
+        .btn-primary-x {
+            width: 100%;
+            height: 52px;
+            border: 0;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(135deg, #9C91E2 0%, var(--accent) 50%, var(--accent-dark) 100%);
+            background-size: 160% 100%;
+            box-shadow: 0 10px 24px rgba(139, 127, 214, .38);
+            transition: transform .2s var(--ease), box-shadow .2s var(--ease), background-position .4s var(--ease);
+        }
+
+            .btn-primary-x:hover {
+                color: #fff;
+                transform: translateY(-2px);
+                background-position: 100% 0;
+                box-shadow: 0 14px 30px rgba(139, 127, 214, .45);
+            }
+
+        .btn-ghost {
+            width: 100%;
+            height: 46px;
+            margin-top: 10px;
+            border: 1.5px solid var(--border);
+            border-radius: 14px;
+            background: #fff;
+            color: #5D6075;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: border-color .2s, background .2s;
+        }
+
+            .btn-ghost:hover {
+                border-color: #DEDBEE;
+                background: var(--bg);
+            }
+
+        .page-foot {
+            margin-top: 20px;
+            font-size: 12px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        @@media (max-width: 575.98px) {
+            .page {
+                padding: 20px 14px;
+                justify-content: flex-start;
+            }
+
+            .brand {
+                margin: 8px 0 18px;
+            }
+
+            .card-x {
+                padding: 34px 20px 26px;
+                border-radius: 24px;
+            }
+
+            .err-code {
+                font-size: 72px;
+            }
+        }
+
+        @@media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+            }
+        }
+    </style>
 </head>
 <body>
+
+    <div class="auth-bg" aria-hidden="true"><span class="g1"></span><span class="g2"></span><span class="g3"></span></div>
+
+    <main class="page">
+        <a class="brand" href="/" aria-label="Mailora ana sayfa">
+            <span class="brand-logo"><i class="bi bi-envelope-paper-heart-fill"></i></span>
+            <span class="brand-name">Mail<span>ora</span></span>
+        </a>
+
+        <section class="card-x" role="alert">
+            <div class="err-ic"><i class="bi bi-compass"></i></div>
+            <div class="err-code">404</div>
+            <h1>Sayfa bulunamadı</h1>
+            <p class="sub">Aradığınız sayfa taşınmış, silinmiş ya da hiç var olmamış olabilir.</p>
+
+            @if (isAuth)
+            {
+                <a class="btn-primary-x" asp-controller="Message" asp-action="Inbox">
+                    <i class="bi bi-inbox"></i><span>Gelen kutusuna dön</span>
+                </a>
+            }
+            else
+            {
+                <a class="btn-primary-x" asp-controller="Login" asp-action="SignIn">
+                    <i class="bi bi-box-arrow-in-right"></i><span>Giriş yap</span>
+                </a>
+            }
+            <button type="button" class="btn-ghost" onclick="history.back()">
+                <i class="bi bi-arrow-left"></i><span>Önceki sayfaya dön</span>
+            </button>
+        </section>
+
+        <div class="page-foot">© 2026 Mailora</div>
+    </main>
+
 </body>
 </html>
