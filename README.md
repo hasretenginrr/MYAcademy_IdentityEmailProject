@@ -4,7 +4,7 @@ ASP.NET Core MVC, ASP.NET Core Identity ve Entity Framework Core ile geliştiril
 
 > M&Y Yazılım Eğitim Akademi Danışmanlık · 12. Dönem Bootcamp · Proje Case Çalışması
 
- [Hasret Nisa Enginer]
+**Hazırlayan:** [Hasret Nisa Enginer]
 
 ---
 
@@ -35,6 +35,7 @@ ASP.NET Core MVC, ASP.NET Core Identity ve Entity Framework Core ile geliştiril
 | E-posta | MailKit / MimeKit (SMTP) |
 | HTML temizleme | HtmlSanitizer (`Ganss.Xss`) |
 | Arayüz | Bootstrap 5.3, Bootstrap Icons, Plus Jakarta Sans, Mailora teması |
+| Grafikler | Chart.js (Dashboard) |
 | Gizli bilgiler | .NET User Secrets |
 
 ---
@@ -63,7 +64,7 @@ ASP.NET Core MVC, ASP.NET Core Identity ve Entity Framework Core ile geliştiril
 | 06 | Ad, soyad, profil fotoğrafı güncelleme | ✅ | `ProfileController` |
 | 06 | Navbar ve profilde oturum açan kullanıcının bilgileri | ✅ | Header ViewComponent, Profilim |
 | 07 | Gelen/gönderilen/okunmamış/yıldızlı/taslak adetleri gerçek veriden | ✅ | `DashboardController` |
-| 07 | Son mesajlar ve kategori dağılımı | ✅ | Dashboard |
+| 07 | Son mesajlar ve kategori dağılımı | ✅ | Dashboard (14 günlük trafik grafiği, kategori halka grafiği, son mesajlar listesi) |
 | 08 | İsteğe bağlı: dosya eki, çoklu alıcı, CC/BCC, arşiv, bildirim | ❌ | Kapsam dışı bırakıldı |
 
 ---
@@ -225,11 +226,10 @@ erDiagram
 - **Çıkış:** Anti-forgery korumalı **POST** ile yapılır.
 - **Korumalı sayfalar:** Mesaj, profil ve dashboard sayfaları `[Authorize]` ile korunur. Girişsiz erişimde giriş sayfasına yönlendirme yapılır; AJAX isteklerinde yönlendirme yerine `401` döner.
 
-<p align="center"><img src="docs/screenshots/01-kayit.png" width="700"><br><em>Kayıt ekranı</em></p>
-<p align="center"><img src="docs/screenshots/02-dogrulama-kodu.png" width="700"><br><em>6 haneli doğrulama kodu ekranı</em></p>
-<p align="center"><img src="docs/screenshots/03-dogrulama-maili.png" width="700"><br><em>Gelen doğrulama e-postası</em></p>
-<p align="center"><img src="docs/screenshots/04-giris.png" width="700"><br><em>Giriş ekranı</em></p>
-<p align="center"><img src="docs/screenshots/05-giris-hata.png" width="700"><br><em>Hatalı giriş (genel hata mesajı)</em></p>
+<p align="center"><img src="docs/screenshots/kayit.png" width="700"><br><em>Kayıt ekranı</em></p>
+<p align="center"><img src="docs/screenshots/dogrulama-kodu.png" width="700"><br><em>6 haneli doğrulama kodu ekranı</em></p>
+<p align="center"><img src="docs/screenshots/dogrulama-maili.png" width="700"><br><em>Gelen doğrulama e-postası</em></p>
+<p align="center"><img src="docs/screenshots/giris.png" width="700"><br><em>Giriş ekranı</em></p>
 
 ### 5.2 Şifre işlemleri (Case 02)
 
@@ -238,11 +238,8 @@ erDiagram
 - **Geçersiz / süresi dolmuş / kullanılmış bağlantı:** Hata fırlatmak yerine "Bağlantı geçersiz" ekranı ve "Yeni bağlantı iste" düğmesi gösterilir.
 - **Şifre değiştirme:** Giriş yapmış kullanıcı **mevcut şifresini** doğrulayarak yeni şifre belirler. Başarılı değişimden sonra oturum açık kalır, diğer cihazlardaki oturumlar düşer.
 
-<p align="center"><img src="docs/screenshots/06-sifremi-unuttum.png" width="700"><br><em>Şifremi unuttum</em></p>
-<p align="center"><img src="docs/screenshots/07-sifirlama-maili.png" width="700"><br><em>Şifre sıfırlama e-postası</em></p>
-<p align="center"><img src="docs/screenshots/08-yeni-sifre.png" width="700"><br><em>Yeni şifre belirleme</em></p>
-<p align="center"><img src="docs/screenshots/09-gecersiz-baglanti.png" width="700"><br><em>Geçersiz / kullanılmış bağlantı</em></p>
-<p align="center"><img src="docs/screenshots/10-sifre-degistir.png" width="700"><br><em>Oturum açıkken şifre değiştirme</em></p>
+<p align="center"><img src="docs/screenshots/sifremi-unuttum.png" width="700"><br><em>Şifremi unuttum</em></p>
+<p align="center"><img src="docs/screenshots/sifre-degistir.png" width="700"><br><em>Oturum açıkken şifre değiştirme</em></p>
 
 ### 5.3 Gelen Kutusu ve mesaj detayı (Case 03)
 
@@ -254,9 +251,8 @@ erDiagram
 - **Filtreler:** Tümü / Okunmamış / Yıldızlı ve **kategori** filtresi. Sayfalama.
 - Kısayollar: `j` / `k` ile satırlar arasında gezinme.
 
-<p align="center"><img src="docs/screenshots/11-gelen-kutusu.png" width="800"><br><em>Gelen Kutusu</em></p>
-<p align="center"><img src="docs/screenshots/12-mesaj-detay.png" width="800"><br><em>Mesaj detayı</em></p>
-<p align="center"><img src="docs/screenshots/13-kategori-filtresi.png" width="800"><br><em>Kategori filtresi ve arama</em></p>
+<p align="center"><img src="docs/screenshots/gelen-kutusu.png" width="800"><br><em>Gelen Kutusu</em></p>
+<p align="center"><img src="docs/screenshots/mesaj-detay.png" width="800"><br><em>Mesaj detayı</em></p>
 
 ### 5.4 Yeni mesaj ve gönderim (Case 04)
 
@@ -265,8 +261,6 @@ erDiagram
 - **Zengin metin içerik:** İçerik HTML olarak saklanır ve kaydedilirken **HtmlSanitizer** ile temizlenir (XSS koruması).
 - Gönderilen mesaj alıcının **Gelen Kutusu**na, göndericinin **Gönderilenler** alanına yansır.
 
-<p align="center"><img src="docs/screenshots/14-yeni-mesaj.png" width="800"><br><em>Yeni mesaj formu</em></p>
-<p align="center"><img src="docs/screenshots/15-dogrulama-hatalari.png" width="800"><br><em>Form doğrulama hataları</em></p>
 
 ### 5.5 Gönderilenler, Yıldızlılar, Taslaklar, Çöp Kutusu, Yanıtla / İlet (Case 05)
 
@@ -278,12 +272,9 @@ erDiagram
 - **İlet:** Konu `Fwd:` ile başlar, orijinal mesaj ("İletilen mesaj" bilgisiyle) içeriğe eklenir, alıcı boştur.
 - Yanıtla / İlet, başka birinin mesajı için çalışmaz (`404`) ve orijinal mesajı değiştirmez; yeni bir mesaj oluşturur.
 
-<p align="center"><img src="docs/screenshots/16-gonderilenler.png" width="800"><br><em>Gönderilenler</em></p>
-<p align="center"><img src="docs/screenshots/17-yildizli.png" width="800"><br><em>Yıldızlı mesajlar</em></p>
-<p align="center"><img src="docs/screenshots/18-taslaklar.png" width="800"><br><em>Taslaklar</em></p>
-<p align="center"><img src="docs/screenshots/19-cop-kutusu.png" width="800"><br><em>Çöp kutusu</em></p>
-<p align="center"><img src="docs/screenshots/20-yanitla.png" width="800"><br><em>Yanıtla</em></p>
-<p align="center"><img src="docs/screenshots/21-ilet.png" width="800"><br><em>İlet</em></p>
+<p align="center"><img src="docs/screenshots/gonderilenler.png" width="800"><br><em>Gönderilenler</em></p>
+<p align="center"><img src="docs/screenshots/taslaklar.png" width="800"><br><em>Taslaklar</em></p>
+<p align="center"><img src="docs/screenshots/cop-kutusu.png" width="800"><br><em>Çöp kutusu</em></p>
 
 ### 5.6 Kategoriler, profil ve hesap bilgileri (Case 06)
 
@@ -294,18 +285,25 @@ erDiagram
 - **Navbar:** Oturum açan kullanıcının adı, soyadı ve kullanıcı adı gösterilir; çıkış buradan yapılır.
 - **Sidebar sayaçları** (okunmamış, taslak, yıldızlı, çöp) veritabanından hesaplanır.
 
-<p align="center"><img src="docs/screenshots/22-sidebar-etiketler.png" width="400"><br><em>Veritabanından gelen etiketler ve sayaçlar</em></p>
-<p align="center"><img src="docs/screenshots/23-profil.png" width="800"><br><em>Profilim ve fotoğraf yükleme</em></p>
-<p align="center"><img src="docs/screenshots/24-navbar.png" width="800"><br><em>Navbar'da oturum açan kullanıcı</em></p>
+<p align="center"><img src="docs/screenshots/profil.png" width="800"><br><em>Profilim ve fotoğraf yükleme</em></p>
 
 ### 5.7 Dashboard (Case 07)
 
-- **Gerçek verilerden** hesaplanan özet kartları: gelen, okunmamış, gönderilen, taslak ve yıldızlı mesaj adetleri. Kartlar ilgili listeye bağlanır.
-- **Son mesajlar:** Gelen kutusundaki en yeni mesajlar (okunmamışlar kalın).
-- **Kategorilere göre dağılım:** Her kategorinin mesaj sayısı ve yüzdesi çubuklarla gösterilir; kategorisiz mesajlar "Kategorisiz" olarak sayılır.
-- Sayılar sunucuda `COUNT` / `GROUP BY` sorgularıyla hesaplanır, listeler yalnızca gerekli sütunları çeker.
+- **Karşılama:** Günün saatine göre selamlama, tarih ve hızlı eylemler (Yeni mesaj, Gelen kutusu).
+- **Özet kartları (gerçek verilerden):**
+  - **Gelen kutusu** adedi, **geçen haftaya göre yüzde değişimiyle** (trend rozeti)
+  - **Okunmamış** adedi ve okunma oranı çubuğu
+  - **Gönderilen** adedi ve geçen haftaya göre değişim
+  - **Bugün gelen** mesaj sayısı, altında **taslak** ve **yıldızlı** adetleri
+  - Kartlar ilgili listeye bağlanır.
+- **Mesaj trafiği grafiği:** Son 14 günün günlük **gelen** ve **gönderilen** mesaj sayıları (Chart.js, çubuk grafik). Mesaj olmayan günler 0 olarak gösterilir.
+- **Kategori dağılımı grafiği:** Gelen kutusundaki mesajların kategorilere göre halka grafiği; kategorisiz mesajlar "Kategorisiz" olarak sayılır.
+- **Son mesajlar:** Gelen kutusundaki en yeni mesajlar (avatar, kategori etiketi, zaman; okunmamışlar kalın). Tıklayınca mesaj açılır.
+- **En çok yazanlar:** Gelen kutusuna en çok mesaj gönderen 5 kişi, toplam ve okunmamış sayısıyla. Bir kişiye tıklamak Gelen Kutusunu o kişiye göre arar.
+- Sayılar sunucuda `COUNT` / `GROUP BY` sorgularıyla hesaplanır; listeler yalnızca gerekli sütunları çeker. Haftalık karşılaştırma, tek bir 14 günlük sorgudan türetilir.
 
-<p align="center"><img src="docs/screenshots/25-dashboard.png" width="800"><br><em>Dashboard</em></p>
+<p align="center"><img src="docs/screenshots/dashboard.png" width="800"><br><em>Dashboard: özet kartları ve grafikler</em></p>
+<p align="center"><img src="docs/screenshots/dashboard1.png" width="800"><br><em>Dashboard: son mesajlar ve en çok yazanlar</em></p>
 
 ### 5.8 Hata sayfaları (Case 01)
 
@@ -313,9 +311,7 @@ erDiagram
 - Yetkisiz erişimde `AccessDeniedPath`, bulunamayan adreslerde `UseStatusCodePagesWithReExecute` devreye girer.
 - Başkasına ait bir mesajın adresi denendiğinde mesajın varlığı bile açıklanmaz; **404** döner.
 
-<p align="center"><img src="docs/screenshots/26-hata-404.png" width="600"><br><em>404</em></p>
-<p align="center"><img src="docs/screenshots/27-hata-403.png" width="600"><br><em>403</em></p>
-<p align="center"><img src="docs/screenshots/28-hata-401.png" width="600"><br><em>401</em></p>
+<p align="center"><img src="docs/screenshots/giris-hata.png" width="600"><br><em>401 · Giriş gerekli sayfası</em></p>
 
 ---
 
